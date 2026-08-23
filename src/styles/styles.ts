@@ -30,7 +30,12 @@ export const COLORS = {
         100: '#f8d7da',
         200: '#f5c2c7',
         500: '#FF0000',
-    }
+    },
+
+    // Red
+    green: {
+        100: '#2CB44E'
+    },
 }
 
 export const FONTS = {
