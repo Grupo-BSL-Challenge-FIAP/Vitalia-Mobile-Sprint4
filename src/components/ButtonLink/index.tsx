@@ -8,6 +8,7 @@ import { ButtonLinkType } from "../../types/ButtonLinkType";
 export default function ButtonLink({
   route,
   paddingVertical,
+  paddingHorizontal,
   alignItems,
   borderRadius,
   backgroundColor,
@@ -30,6 +31,7 @@ export default function ButtonLink({
       style={{
         backgroundColor: backgroundColor || COLORS.orange[900],
         paddingVertical: paddingVertical || 11,
+        paddingHorizontal: paddingHorizontal || 0,
         alignItems: alignItems || "center",
         borderRadius: borderRadius || 15,
         borderWidth: borderWidth || 3,
