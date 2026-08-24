@@ -3,4 +3,5 @@ export interface SubTitleOrangeType {
   fontSize?: number;
   fontFamily?: string;
   textAlign?: "auto" | "left" | "center" | "right" | "justify";
+  color?: string;
 }

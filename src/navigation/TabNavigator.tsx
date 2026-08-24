@@ -1,13 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardResponsibleScreen from "../screens/DashboardResponsibleScreen";
 import { RootStackParamList } from "./AppNavigator";
-import PetsScreen from "../screens/PetsScreen";
-import NotificationsScreen from "../screens/NotificationsScreen";
 import { COLORS, FONTS } from "../styles/styles";
-import ProfileResponsibleScreen from "../screens/ProfileResponsibleScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 import PageUnderDevelopmentScreen from "../screens/PageUnderDevelopmentScreen";
+import AllPetsScreen from "../screens/AllPetsScreen";
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -74,7 +72,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Pets"
-        component={PageUnderDevelopmentScreen}
+        component={AllPetsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
