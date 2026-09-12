@@ -1,7 +1,7 @@
 import LayoutWrapper from "../../components/LayoutWrapper";
 import ContainerTitleSubTitle from "../../components/ContainerTitleSubTitle";
 import DataConfirmationCard from "../../components/DataConfirmationCard";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import HeaderForm from "../../components/HeaderForm";
 import ButtonFormLink from "../../components/ButtonFormLink";
 import Feather from "@expo/vector-icons/Feather";
@@ -14,9 +14,13 @@ import { RootStackParamList } from "../../navigation/AppNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 
+import { useCreateAccount } from "../../hooks/useCreateAccount";
+
 export default function AccountCreationConfirmationScreen() {
   const navigate =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const createAccountMutation = useCreateAccount();
 
   const [responsible, setResponsible] = useState<ResponsibleType>({
     name: "",
@@ -25,6 +29,7 @@ export default function AccountCreationConfirmationScreen() {
     cpf: "",
     phone: "",
     address: "",
+    password: "",
   });
 
   const [pet, setPet] = useState<PetType>({
@@ -39,29 +44,44 @@ export default function AccountCreationConfirmationScreen() {
 
   useEffect(() => {
     const loadStorageData = async () => {
-      const responsibleData = await AsyncStorage.getItem(
-        "@petguardian:responsibleData",
-      );
-
-      const petsData = await AsyncStorage.getItem("@petguardian:petsData");
-      const activePetId = await AsyncStorage.getItem(
-        "@petguardian:activePetId",
-      );
-
-      if (responsibleData) {
-        setResponsible(JSON.parse(responsibleData));
-      }
-
-      if (petsData) {
-        const pets = JSON.parse(petsData);
-
-        const activePet = pets.find(
-          (pet: PetType) => pet.id === Number(activePetId),
+      try {
+        const responsibleData = await AsyncStorage.getItem(
+          "@petguardian:responsibleData",
         );
 
-        if (activePet) {
-          setPet(activePet);
+        const petsData = await AsyncStorage.getItem(
+          "@petguardian:petsData",
+        );
+
+        const activePetId = await AsyncStorage.getItem(
+          "@petguardian:activePetId",
+        );
+
+        if (responsibleData) {
+          setResponsible(JSON.parse(responsibleData));
         }
+
+        if (petsData) {
+          const pets = JSON.parse(petsData);
+
+          const activePet = pets.find(
+            (pet: PetType) => pet.id === Number(activePetId),
+          );
+
+          if (activePet) {
+            setPet(activePet);
+          }
+        }
+      } catch (error) {
+        console.error(
+          "Erro ao carregar dados do cadastro:",
+          error,
+        );
+
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar os dados do cadastro.",
+        );
       }
     };
 
@@ -69,14 +89,84 @@ export default function AccountCreationConfirmationScreen() {
   }, []);
 
   const handleCreateAccount = () => {
-    const newAccountData = {
-      responsible,
-      pet,
-    };
+    if (createAccountMutation.isPending) {
+      return;
+    }
 
-    console.log("Dados da nova conta:", newAccountData);
+    if (
+      !responsible.name ||
+      !responsible.email ||
+      !responsible.password ||
+      !responsible.phone
+    ) {
+      Alert.alert(
+        "Dados incompletos",
+        "Não foi possível recuperar todos os dados do responsável.",
+      );
 
-    navigate.navigate("TabsDashboardResponsible");
+      return;
+    }
+
+    if (
+      !pet.name ||
+      !pet.gender ||
+      !pet.birthDate ||
+      !pet.weight
+    ) {
+      Alert.alert(
+        "Dados incompletos",
+        "Não foi possível recuperar todos os dados do pet.",
+      );
+
+      return;
+    }
+
+    createAccountMutation.mutate(
+      {
+        responsible: {
+          name: responsible.name,
+          email: responsible.email,
+          password: responsible.password,
+          phone: responsible.phone,
+        },
+
+        pet: {
+          name: pet.name,
+          gender: pet.gender,
+          birthDate: pet.birthDate,
+          weight: pet.weight,
+        },
+      },
+      {
+        onSuccess: () => {
+          Alert.alert(
+            "Conta criada!",
+            "Sua conta e o seu pet foram cadastrados com sucesso.",
+          );
+
+          navigate.reset({
+            index: 0,
+            routes: [
+              {
+                name: "TabsDashboardResponsible",
+              },
+            ],
+          });
+        },
+
+        onError: (error) => {
+          console.error(
+            "Erro ao criar conta:",
+            error,
+          );
+
+          Alert.alert(
+            "Erro ao criar conta",
+            "Não foi possível concluir o cadastro. Verifique os dados e tente novamente.",
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -89,11 +179,13 @@ export default function AccountCreationConfirmationScreen() {
         }}
       >
         <HeaderForm initialStep={3} />
+
         <ContainerTitleSubTitle
           textTitle="Tudo certo!"
           textSubTitle="Confira se os dados estão certos:"
           fontSizeSubTitle={15}
         />
+
         <DataConfirmationCard title="Responsável:">
           <ContainerTitleSubTitle
             alignItems="center"
@@ -104,6 +196,17 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
+          <ContainerTitleSubTitle
+            alignItems="center"
+            textTitle="E-mail: "
+            textSubTitle={responsible.email}
+            fontSizeTiTleOrange={18}
+            fontSizeSubTitle={18}
+            flexDirection="row"
+            gap={2}
+          />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Data de nascimento: "
@@ -113,6 +216,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="CPF: "
@@ -122,6 +226,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Telefone: "
@@ -131,6 +236,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Endereço: "
@@ -141,6 +247,7 @@ export default function AccountCreationConfirmationScreen() {
             gap={2}
           />
         </DataConfirmationCard>
+
         <DataConfirmationCard title="Pet:">
           <ContainerTitleSubTitle
             alignItems="center"
@@ -151,6 +258,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Espécie: "
@@ -160,6 +268,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Raça: "
@@ -169,6 +278,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Sexo: "
@@ -178,6 +288,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Nascimento: "
@@ -187,6 +298,7 @@ export default function AccountCreationConfirmationScreen() {
             flexDirection="row"
             gap={2}
           />
+
           <ContainerTitleSubTitle
             alignItems="center"
             textTitle="Peso: "
@@ -197,16 +309,23 @@ export default function AccountCreationConfirmationScreen() {
             gap={2}
           />
         </DataConfirmationCard>
+
         <ButtonFormLink
           onPress={handleCreateAccount}
           marginHorizontal={20}
           marginTop={20}
           iconLeft={
-            <Feather name="user-plus" size={35} color={COLORS.white[100]} />
+            <Feather
+              name="user-plus"
+              size={35}
+              color={COLORS.white[100]}
+            />
           }
           colorText={COLORS.white[100]}
         >
-          Criar conta
+          {createAccountMutation.isPending
+            ? "Criando conta..."
+            : "Criar conta"}
         </ButtonFormLink>
       </View>
     </LayoutWrapper>
