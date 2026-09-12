@@ -138,22 +138,6 @@ export default function AccountCreationConfirmationScreen() {
         },
       },
       {
-        onSuccess: () => {
-          Alert.alert(
-            "Conta criada!",
-            "Sua conta e o seu pet foram cadastrados com sucesso.",
-          );
-
-          navigate.reset({
-            index: 0,
-            routes: [
-              {
-                name: "TabsDashboardResponsible",
-              },
-            ],
-          });
-        },
-
         onError: (error) => {
           console.error(
             "Erro ao criar conta:",
