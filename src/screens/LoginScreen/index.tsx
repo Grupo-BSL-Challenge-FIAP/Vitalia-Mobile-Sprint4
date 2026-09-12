@@ -150,8 +150,7 @@ export default function LoginScreen() {
   return (
     <LayoutWrapper isDogPawBottomTop={true}>
       <ContainerImage
-        imagePath={require("../../assets/petGuardianLogo.png")}
-        marginTop={73}
+        imagePath={require("../../assets/logo_vitalia_2.png")}
       />
 
       <ContainerTitleSubTitle
