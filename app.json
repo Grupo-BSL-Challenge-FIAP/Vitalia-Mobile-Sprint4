@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "PetGuardian",
-    "slug": "petGuardian",
+    "name": "Vitalia",
+    "slug": "Vitalia",
     "version": "1.0.0",
     "plugins": [
       "expo-font",
       "expo-splash-screen"
     ],
     "splash": {
-      "image": "./src/assets/petGuardianLogoLight.png",
+      "image": "./src/assets/logo_splash_vitalia2.png",
       "resizeMode": "contain"
     }
   }
