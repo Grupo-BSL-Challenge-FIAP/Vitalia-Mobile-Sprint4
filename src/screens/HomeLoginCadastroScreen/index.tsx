@@ -22,7 +22,7 @@ export default function HomeLoginCadastroScreen() {
               gap: 15
             }}
           >
-            <TitleOrange title={`Boas vindas ao\nPet Guardian!`} />
+            <TitleOrange title={`Boas vindas ao\nVitalia!`} fontSize={36}/>
             <SubTitleOrange title={`Faça login ou cadastre-se para começar a cuidar do seu pet!`} />
           </View>
           <ContainerButton
