@@ -9,14 +9,19 @@ import TextLink from "../../components/TextLink";
 import ButtonFormLink from "../../components/ButtonFormLink";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import AlertMessageError from "../../components/AlertMessageError";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/AppNavigator";
+import axios from "axios";
+
+import { useLogin } from "../../hooks/useLogin";
 
 export default function LoginScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const loginMutation = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +33,7 @@ export default function LoginScreen() {
     password: false,
   });
 
-  const validateLogin = async () => {
+  const validateLogin = () => {
     const newErrors = {
       email: false,
       password: false,
@@ -36,57 +41,110 @@ export default function LoginScreen() {
 
     if (!email.trim()) {
       newErrors.email = true;
+
       setErrors(newErrors);
       setMessageError("O e-mail é obrigatório.");
+
       return false;
     }
 
     if (!password.trim()) {
       newErrors.password = true;
+
       setErrors(newErrors);
       setMessageError("A senha é obrigatória.");
-      return false;
-    }
 
-    const responsibleData = await AsyncStorage.getItem(
-      "@petguardian:responsibleData"
-    );
-
-    if (!responsibleData) {
-      newErrors.email = true;
-      newErrors.password = true;
-      setErrors(newErrors);
-      setMessageError("Nenhuma conta cadastrada foi encontrada.");
-      return false;
-    }
-
-    const responsible = JSON.parse(responsibleData);
-
-    if (email.trim() !== responsible.email) {
-      newErrors.email = true;
-      setErrors(newErrors);
-      setMessageError("E-mail não encontrado.");
-      return false;
-    }
-
-    if (password !== responsible.password) {
-      newErrors.password = true;
-      setErrors(newErrors);
-      setMessageError("Senha incorreta.");
       return false;
     }
 
     setErrors(newErrors);
     setMessageError("");
+
     return true;
   };
 
-  const handleLogin = async () => {
-    const isValid = await validateLogin();
+  const handleLogin = () => {
+    if (loginMutation.isPending) {
+      return;
+    }
 
-    if (!isValid) return;
+    const isValid = validateLogin();
 
-    navigation.navigate("TabsDashboardResponsible");
+    if (!isValid) {
+      return;
+    }
+
+    loginMutation.mutate(
+      {
+        email: email.trim(),
+        password,
+      },
+      {
+        onSuccess: (data) => {
+          console.log("Login realizado com sucesso:", data);
+
+          setErrors({
+            email: false,
+            password: false,
+          });
+
+          setMessageError("");
+
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: "TabsDashboardResponsible",
+              },
+            ],
+          });
+        },
+
+        onError: (error) => {
+          console.error("Erro ao realizar login:", error);
+
+          setErrors({
+            email: true,
+            password: true,
+          });
+
+          if (axios.isAxiosError(error)) {
+            console.error("Status:", error.response?.status);
+            console.error(
+              "Resposta da API:",
+              error.response?.data,
+            );
+
+            const status = error.response?.status;
+
+            if (
+              status === 400 ||
+              status === 401 ||
+              status === 403 ||
+              status === 404
+            ) {
+              setMessageError(
+                "E-mail ou senha incorretos.",
+              );
+
+              return;
+            }
+
+            if (!error.response) {
+              setMessageError(
+                "Não foi possível conectar ao servidor. Tente novamente.",
+              );
+
+              return;
+            }
+          }
+
+          setMessageError(
+            "Não foi possível realizar o login. Tente novamente.",
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -109,8 +167,19 @@ export default function LoginScreen() {
           placeholder="Digite seu e-mail"
           marginBottom={30}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => {
+            setEmail(text);
+
+            if (errors.email) {
+              setErrors((previous) => ({
+                ...previous,
+                email: false,
+              }));
+            }
+          }}
           error={errors.email}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
 
         <InputForm
@@ -119,7 +188,16 @@ export default function LoginScreen() {
           marginBottom={10}
           secureTextEntry
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+
+            if (errors.password) {
+              setErrors((previous) => ({
+                ...previous,
+                password: false,
+              }));
+            }
+          }}
           error={errors.password}
         />
 
@@ -154,7 +232,9 @@ export default function LoginScreen() {
             />
           }
         >
-          Entrar
+          {loginMutation.isPending
+            ? "Entrando..."
+            : "Entrar"}
         </ButtonFormLink>
       </ContainerForm>
     </LayoutWrapper>
