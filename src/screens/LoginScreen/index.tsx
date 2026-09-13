@@ -10,18 +10,15 @@ import ButtonFormLink from "../../components/ButtonFormLink";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import AlertMessageError from "../../components/AlertMessageError";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../navigation/AppNavigator";
 import axios from "axios";
 
 import { useLogin } from "../../hooks/useLogin";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function LoginScreen() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const loginMutation = useLogin();
+
+  const { restoreSession } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -80,8 +77,11 @@ export default function LoginScreen() {
         password,
       },
       {
-        onSuccess: (data) => {
-          console.log("Login realizado com sucesso:", data);
+        onSuccess: async (data) => {
+          console.log(
+            "Login realizado com sucesso:",
+            data,
+          );
 
           setErrors({
             email: false,
@@ -90,18 +90,25 @@ export default function LoginScreen() {
 
           setMessageError("");
 
-          navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: "TabsDashboardResponsible",
-              },
-            ],
-          });
+          try {
+            await restoreSession();
+          } catch (error) {
+            console.error(
+              "Erro ao restaurar sessão após o login:",
+              error,
+            );
+
+            setMessageError(
+              "Login realizado, mas não foi possível iniciar a sessão.",
+            );
+          }
         },
 
         onError: (error) => {
-          console.error("Erro ao realizar login:", error);
+          console.error(
+            "Erro ao realizar login:",
+            error,
+          );
 
           setErrors({
             email: true,
@@ -109,13 +116,18 @@ export default function LoginScreen() {
           });
 
           if (axios.isAxiosError(error)) {
-            console.error("Status:", error.response?.status);
+            console.error(
+              "Status:",
+              error.response?.status,
+            );
+
             console.error(
               "Resposta da API:",
               error.response?.data,
             );
 
-            const status = error.response?.status;
+            const status =
+              error.response?.status;
 
             if (
               status === 400 ||
@@ -213,7 +225,9 @@ export default function LoginScreen() {
         </View>
 
         {messageError.length > 0 && (
-          <AlertMessageError message={messageError} />
+          <AlertMessageError
+            message={messageError}
+          />
         )}
 
         <ButtonFormLink
