@@ -40,6 +40,11 @@ export const COLORS = {
     green: {
         100: '#2CB44E'
     },
+
+    // Gray
+    gray: {
+        100: '#7C7C7C'
+    }
 }
 
 export const FONTS = {
