@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import CardPetDetail from "../../components/CardPetDetail";
 import { COLORS, FONTS } from "../../styles/styles";
 import { useMyPets } from "../../hooks/useMyPets";
+import CardInformationDetailPet from "../../components/CardInformationDetailPet";
 
 export default function PetsDetailScreen() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -65,7 +66,13 @@ export default function PetsDetailScreen() {
           </Text>
         )}
 
-        {!isLoading && !isError && pet && <CardPetDetail pet={pet} />}
+        {!isLoading && !isError && pet && (
+          <>
+            <CardPetDetail pet={pet} />
+
+            <CardInformationDetailPet pet={pet} />
+          </>
+        )}
       </View>
     </LayoutWrapper>
   );
