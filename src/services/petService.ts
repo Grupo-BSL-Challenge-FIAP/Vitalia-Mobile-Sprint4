@@ -18,6 +18,9 @@ export interface PetResponse {
   status: string;
   ownerUserId: number;
   breedId: number | null;
+  breedName: string | null;
+  speciesId: number | null;
+  speciesName: string | null;
 }
 
 interface PageResponse<T> {
