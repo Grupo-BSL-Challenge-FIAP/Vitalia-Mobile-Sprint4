@@ -2,6 +2,7 @@ import { View } from "react-native";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import Header from "../../components/Header";
 import CardProfileUser from "../../components/CardProfileUser";
+import CardInformationUser from "../../components/CardInformationUser";
 
 export default function AccountUserScreen() {
   return (
@@ -16,6 +17,7 @@ export default function AccountUserScreen() {
         }}
       >
         <CardProfileUser />
+        <CardInformationUser />
       </View>
     </LayoutWrapper>
   );
