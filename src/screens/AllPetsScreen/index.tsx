@@ -101,7 +101,11 @@ export default function AllPetsScreen() {
             <CardHeartbeatPet
               key={pet.id}
               pet={pet}
-              onPress={() => navigate.navigate("PetDetailScreen")}
+              onPress={() =>
+                navigate.navigate("PetDetailScreen", {
+                  petId: pet.id,
+                })
+              }
             />
           ))}
 
