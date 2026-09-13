@@ -84,6 +84,11 @@ export default function AppNavigator() {
           />
 
           <Stack.Screen
+            name="PetRegisterScreen"
+            component={PetRegisterScreen}
+          />
+
+          <Stack.Screen
             name="TabsProfileScreen"
             component={TabNavigator}
           />
