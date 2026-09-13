@@ -10,17 +10,13 @@ import { useEffect, useState } from "react";
 import { ResponsibleType } from "../../types/ResponsibleType";
 import { PetType } from "../../types/PetType";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootStackParamList } from "../../navigation/AppNavigator";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 
 import { useCreateAccount } from "../../hooks/useCreateAccount";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function AccountCreationConfirmationScreen() {
-  const navigate =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const createAccountMutation = useCreateAccount();
+  const { restoreSession } = useAuth();
 
   const [responsible, setResponsible] = useState<ResponsibleType>({
     name: "",
@@ -145,15 +141,8 @@ export default function AccountCreationConfirmationScreen() {
         },
       },
       {
-        onSuccess: () => {
-          navigate.reset({
-            index: 0,
-            routes: [
-              {
-                name: "TabsDashboardResponsible",
-              },
-            ],
-          });
+        onSuccess: async () => {
+          await restoreSession();
         },
 
         onError: (error) => {
