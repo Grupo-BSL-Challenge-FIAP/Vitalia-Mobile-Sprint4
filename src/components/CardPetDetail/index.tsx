@@ -63,9 +63,7 @@ export default function CardPetDetail({
     return `Idoso`;
   };
 
-  const breedLabel = pet.breedId
-    ? `Raça #${pet.breedId}`
-    : "Raça não informada";
+  const breedLabel = pet.breedName ?? "Raça não informada";
 
   return (
     <CardPet
