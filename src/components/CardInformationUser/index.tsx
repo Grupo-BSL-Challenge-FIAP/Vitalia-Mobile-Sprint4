@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import TitleOrange from "../TitleOrange";
 import { COLORS, FONTS } from "../../styles/styles";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -223,6 +223,93 @@ export default function CardInformationUser() {
             {user.address || "Não informado"}
           </Text>
         </View>
+      </View>
+
+      <View
+        style={{
+          marginTop: 30,
+          marginHorizontal: 10,
+          gap: 12,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: FONTS.inter[700],
+            fontSize: 16,
+            color: COLORS.orange[900],
+            marginBottom: 2,
+          }}
+        >
+          Conta
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            console.log("Sair da conta");
+          }}
+          activeOpacity={0.8}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            paddingVertical: 12,
+            borderWidth: 2,
+            borderColor: COLORS.orange[900],
+            borderRadius: 10,
+            backgroundColor: COLORS.white[100],
+          }}
+        >
+          <MaterialCommunityIcons
+            name="logout"
+            size={22}
+            color={COLORS.orange[900]}
+          />
+
+          <Text
+            style={{
+              fontFamily: FONTS.inter[700],
+              fontSize: 15,
+              color: COLORS.orange[900],
+            }}
+          >
+            Sair da conta
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            console.log("Excluir conta");
+          }}
+          activeOpacity={0.8}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            paddingVertical: 12,
+            borderWidth: 2,
+            borderColor: COLORS.red[600],
+            borderRadius: 10,
+            backgroundColor: COLORS.red[300],
+          }}
+        >
+          <MaterialCommunityIcons
+            name="delete-outline"
+            size={23}
+            color={COLORS.red[600]}
+          />
+
+          <Text
+            style={{
+              fontFamily: FONTS.inter[700],
+              fontSize: 15,
+              color: COLORS.red[600],
+            }}
+          >
+            Excluir conta
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
