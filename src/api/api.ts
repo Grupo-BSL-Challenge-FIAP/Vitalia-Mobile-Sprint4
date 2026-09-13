@@ -1,5 +1,5 @@
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { tokenStorage } from "../storage/tokenStorage";
 
 export const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_JAVA_URL,
@@ -9,12 +9,15 @@ export const api = axios.create({
   },
 });
 
-api.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem("@vitalia:token");
+api.interceptors.request.use(
+  async (config) => {
+    const token =
+      await tokenStorage.get();
 
-  if (token) {
+    if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-  }
+    }
 
-  return config;
-});
+    return config;
+  },
+);
