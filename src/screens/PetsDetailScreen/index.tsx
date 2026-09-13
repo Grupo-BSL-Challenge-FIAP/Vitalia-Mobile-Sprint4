@@ -7,8 +7,12 @@ import CardPetDetail from "../../components/CardPetDetail";
 import { COLORS, FONTS } from "../../styles/styles";
 import { useMyPets } from "../../hooks/useMyPets";
 import CardInformationDetailPet from "../../components/CardInformationDetailPet";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import CardActionPet from "../../components/CardActionPet";
+import ContainerRecordHealth from "../../components/ContainerRecordHealth";
 
 export default function PetsDetailScreen() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -100,6 +104,8 @@ export default function PetsDetailScreen() {
                 }
               />
             </View>
+
+            <ContainerRecordHealth />
           </>
         )}
       </View>
