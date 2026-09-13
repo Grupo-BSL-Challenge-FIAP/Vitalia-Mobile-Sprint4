@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { tokenStorage } from "../storage/tokenStorage";
 
 import { api } from "../api/api";
 
@@ -55,9 +55,8 @@ export const authService = {
       data,
     );
 
-    await AsyncStorage.setItem(
-      "@vitalia:token",
-      response.data.token,
+    await tokenStorage.save(
+       response.data.token,
     );
 
     return response.data;
