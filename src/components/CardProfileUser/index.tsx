@@ -1,12 +1,21 @@
-import { ActivityIndicator, Image, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../TitleOrange";
 import SubTitleOrange from "../SubTitleOrange";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useState } from "react";
+import EditUserModal from "../EditUserModal";
 
 export default function CardProfileUser() {
   const { data: user, isLoading, isError } = useCurrentUser();
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const formatCpf = (cpf?: string | null) => {
     if (!cpf) {
@@ -118,7 +127,8 @@ export default function CardProfileUser() {
       </View>
 
       <View>
-        <View
+        <TouchableOpacity
+          onPress={() => setEditModalVisible(true)}
           style={{
             borderRadius: 100,
             backgroundColor: COLORS.orange[900],
@@ -126,8 +136,14 @@ export default function CardProfileUser() {
           }}
         >
           <AntDesign name="edit" size={24} color={COLORS.gray[200]} />
-        </View>
+        </TouchableOpacity>
       </View>
+
+      <EditUserModal
+        visible={editModalVisible}
+        user={user}
+        onClose={() => setEditModalVisible(false)}
+      />
     </View>
   );
 }
