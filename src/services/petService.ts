@@ -15,9 +15,12 @@ export interface PetResponse {
   sex: string;
   birthDate: string;
   weightKg: number;
-  status: string;
+  status: "NORMAL" | "ATTENTION" | "CRITICAL";
   ownerUserId: number;
   breedId: number | null;
+  breedName: string | null;
+  speciesId: number | null;
+  speciesName: string | null;
 }
 
 interface PageResponse<T> {
@@ -44,8 +47,7 @@ export const petService = {
   },
 
   getMyPets: async (): Promise<PetResponse[]> => {
-    const response = await api.get<PageResponse<PetResponse>>(
-      "/pets/my-pets",
+    const response = await api.get<PageResponse<PetResponse>>( "/pets/my-pets",
       {
         params: {
           page: 0,
@@ -56,5 +58,21 @@ export const petService = {
     );
 
     return response.data.content;
+  },
+
+  update: async (
+    id: number,
+    data: PetRequest,
+  ): Promise<PetResponse> => {
+    const response = await api.put<PetResponse>(
+      `/pets/${id}`,
+      data,
+    );
+
+    return response.data;
+  },
+
+  remove: async (id: number): Promise<void> => {
+    await api.delete(`/pets/${id}`);
   },
 };

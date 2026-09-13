@@ -10,6 +10,7 @@ import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import ResetPasswordScreen from "../screens/ResetPasswordScreen";
 import TabNavigator from "./TabNavigator";
 import { useAuth } from "../contexts/AuthContext";
+import PetsDetailScreen from "../screens/PetsDetailScreen";
 
 export type RootStackParamList = {
   HomeLoginCadastroScreen: undefined;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   Pets: undefined;
   Notificações: undefined;
   Perfil: undefined;
+  PetDetailScreen: { petId: number; };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -74,6 +76,16 @@ export default function AppNavigator() {
           <Stack.Screen
             name="TabsNotification"
             component={TabNavigator}
+          />
+
+          <Stack.Screen
+            name="PetDetailScreen"
+            component={PetsDetailScreen}
+          />
+
+          <Stack.Screen
+            name="PetRegisterScreen"
+            component={PetRegisterScreen}
           />
 
           <Stack.Screen

@@ -17,7 +17,8 @@ export const COLORS = {
     white: {
         100: '#FFFFFF',
         200: '#F2F2F2',
-        300: '#FAFAFA'
+        300: '#FAFAFA',
+        400: '#F3F3F3'
     },
 
     // black
@@ -29,13 +30,21 @@ export const COLORS = {
     red: {
         100: '#f8d7da',
         200: '#f5c2c7',
+        300: '#c6282836',
         500: '#FF0000',
+        600: '#C62828',
+        700: '#E55656'
     },
 
     // Red
     green: {
         100: '#2CB44E'
     },
+
+    // Gray
+    gray: {
+        100: '#7C7C7C'
+    }
 }
 
 export const FONTS = {

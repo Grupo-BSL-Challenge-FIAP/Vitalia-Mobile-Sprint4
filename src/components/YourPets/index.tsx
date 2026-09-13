@@ -302,9 +302,7 @@ export default function YourPets() {
                           COLORS.orange[100],
                       }}
                     >
-                      {activePet.breedId
-                        ? `#${activePet.breedId}`
-                        : "Não informada"}
+                      {activePet.breedName ?? "Não informada"}
                     </Text>
                   </View>
 
