@@ -1,6 +1,7 @@
 import { ActivityIndicator, Text, View } from "react-native";
 import { useState } from "react";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import Header from "../../components/Header";
 import CardPetDetail from "../../components/CardPetDetail";
@@ -9,18 +10,22 @@ import CardActionPet from "../../components/CardActionPet";
 import ContainerRecordHealth from "../../components/ContainerRecordHealth";
 import ContainerNextEvents from "../../components/ContainerNextEvents";
 import EditPetModal from "../../components/EditPetModal";
+import DeletePetModal from "../../components/DeletePetModal";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { COLORS, FONTS } from "../../styles/styles";
 import { useMyPets } from "../../hooks/useMyPets";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 
 type PetDetailRouteProp = RouteProp<RootStackParamList, "PetDetailScreen">;
+type PetDetailNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function PetsDetailScreen() {
   const route = useRoute<PetDetailRouteProp>();
+  const navigation = useNavigation<PetDetailNavigationProp>();
   const { petId } = route.params;
   const { data: pets = [], isLoading, isError } = useMyPets();
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const pet = pets.find((pet) => pet.id === petId);
 
   return (
@@ -82,7 +87,7 @@ export default function PetsDetailScreen() {
               />
 
               <CardActionPet
-                onPress={() => console.log("Remover pet:", pet.id)}
+                onPress={() => setDeleteModalVisible(true)}
                 text="Remover pet"
                 background={COLORS.red[300]}
                 colorText={COLORS.red[600]}
@@ -105,6 +110,13 @@ export default function PetsDetailScreen() {
               visible={editModalVisible}
               pet={pet}
               onClose={() => setEditModalVisible(false)}
+            />
+
+            <DeletePetModal
+              visible={deleteModalVisible}
+              pet={pet}
+              onClose={() => setDeleteModalVisible(false)}
+              onDeleted={() => navigation.goBack()}
             />
           </>
         )}
