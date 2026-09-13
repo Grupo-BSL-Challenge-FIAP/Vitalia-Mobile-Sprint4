@@ -1,51 +1,102 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View, } from "react-native";
 import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../TitleOrange";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { PetType } from "../../types/PetType";
 import SubTitleOrange from "../SubTitleOrange";
 import BpmCircle from "../BpmCircle";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMyPets } from "../../hooks/useMyPets";
 
 export default function CardHeartbeatPet() {
-  const [pet, setPet] = useState<PetType>({
-    id: 0,
-    name: "",
-    species: "",
-    breed: "",
-    gender: "",
-    birthDate: "",
-    weight: "",
-  });
+  const {
+    data: pets = [],
+    isLoading,
+    isError,
+  } = useMyPets();
+
+  const [activePetId, setActivePetId] =
+    useState<number | null>(null);
 
   useEffect(() => {
-    const loadStorageData = async () => {
-      const responsibleData = await AsyncStorage.getItem(
-        "@petguardian:responsibleData",
-      );
+    const loadActivePet = async () => {
+      if (pets.length === 0) {
+        return;
+      }
 
-      const petsData = await AsyncStorage.getItem("@petguardian:petsData");
-      const activePetId = await AsyncStorage.getItem(
-        "@petguardian:activePetId",
-      );
-
-      if (petsData) {
-        const pets = JSON.parse(petsData);
-
-        const activePet = pets.find(
-          (pet: PetType) => pet.id === Number(activePetId),
+      const storedActivePetId =
+        await AsyncStorage.getItem(
+          "@petguardian:activePetId",
         );
 
-        if (activePet) {
-          setPet(activePet);
+      if (storedActivePetId) {
+        const parsedId = Number(storedActivePetId);
+
+        const petExists = pets.some(
+          (pet) => pet.id === parsedId,
+        );
+
+        if (petExists) {
+          setActivePetId(parsedId);
+          return;
         }
       }
+
+      setActivePetId(pets[0].id);
+
+      await AsyncStorage.setItem(
+        "@petguardian:activePetId",
+        String(pets[0].id),
+      );
     };
 
-    loadStorageData();
-  }, []);
+    loadActivePet();
+  }, [pets]);
+
+  const pet =
+    pets.find(
+      (pet) => pet.id === activePetId,
+    ) ?? pets[0];
+
+  if (isLoading) {
+    return (
+      <Text
+        style={{
+          fontFamily: FONTS.inter[500],
+          color: COLORS.orange[900],
+        }}
+      >
+        Carregando pet...
+      </Text>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Text
+        style={{
+          fontFamily: FONTS.inter[500],
+          color: COLORS.orange[900],
+        }}
+      >
+        Não foi possível carregar o pet.
+      </Text>
+    );
+  }
+
+  if (!pet) {
+    return (
+      <Text
+        style={{
+          fontFamily: FONTS.inter[500],
+          color: COLORS.orange[900],
+        }}
+      >
+        Nenhum pet cadastrado.
+      </Text>
+    );
+  }
 
   return (
     <TouchableOpacity
@@ -82,28 +133,37 @@ export default function CardHeartbeatPet() {
               borderWidth: 2,
             }}
           />
+
           <View>
             <TitleOrange
               title={pet.name}
               fontSize={20}
               fontFamily={FONTS.inter[700]}
             />
+
             <SubTitleOrange
-              title={pet.breed}
+              title={
+                pet.breedId
+                  ? `Raça #${pet.breedId}`
+                  : "Raça não informada"
+              }
               fontFamily={FONTS.inter[500]}
               color={COLORS.orange[900]}
               fontSize={12}
             />
+
             <SubTitleOrange
-              title={pet.species}
+              title={pet.sex}
               fontFamily={FONTS.inter[500]}
               color={COLORS.orange[900]}
               fontSize={12}
             />
           </View>
         </View>
+
         <BpmCircle />
       </View>
+
       <View
         style={{
           flexDirection: "row",
@@ -124,6 +184,7 @@ export default function CardHeartbeatPet() {
             size={24}
             color={COLORS.orange[900]}
           />
+
           <Text
             style={{
               fontFamily: FONTS.inter[700],
@@ -135,6 +196,7 @@ export default function CardHeartbeatPet() {
           </Text>
         </View>
       </View>
+
       <View
         style={{
           flexDirection: "row",
@@ -142,7 +204,11 @@ export default function CardHeartbeatPet() {
           marginTop: -30,
         }}
       >
-        <Entypo name="chevron-small-right" size={35} color="black" />
+        <Entypo
+          name="chevron-small-right"
+          size={35}
+          color="black"
+        />
       </View>
     </TouchableOpacity>
   );
