@@ -5,101 +5,12 @@ import SubTitleOrange from "../SubTitleOrange";
 import BpmCircle from "../BpmCircle";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMyPets } from "../../hooks/useMyPets";
+import { CardHeartbeatPetType } from '../../types/CardHeartbeatPetType';
 
-export default function CardHeartbeatPet() {
-  const {
-    data: pets = [],
-    isLoading,
-    isError,
-  } = useMyPets();
-
-  const [activePetId, setActivePetId] =
-    useState<number | null>(null);
-
-  useEffect(() => {
-    const loadActivePet = async () => {
-      if (pets.length === 0) {
-        return;
-      }
-
-      const storedActivePetId =
-        await AsyncStorage.getItem(
-          "@petguardian:activePetId",
-        );
-
-      if (storedActivePetId) {
-        const parsedId = Number(storedActivePetId);
-
-        const petExists = pets.some(
-          (pet) => pet.id === parsedId,
-        );
-
-        if (petExists) {
-          setActivePetId(parsedId);
-          return;
-        }
-      }
-
-      setActivePetId(pets[0].id);
-
-      await AsyncStorage.setItem(
-        "@petguardian:activePetId",
-        String(pets[0].id),
-      );
-    };
-
-    loadActivePet();
-  }, [pets]);
-
-  const pet =
-    pets.find(
-      (pet) => pet.id === activePetId,
-    ) ?? pets[0];
-
-  if (isLoading) {
-    return (
-      <Text
-        style={{
-          fontFamily: FONTS.inter[500],
-          color: COLORS.orange[900],
-        }}
-      >
-        Carregando pet...
-      </Text>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Text
-        style={{
-          fontFamily: FONTS.inter[500],
-          color: COLORS.orange[900],
-        }}
-      >
-        Não foi possível carregar o pet.
-      </Text>
-    );
-  }
-
-  if (!pet) {
-    return (
-      <Text
-        style={{
-          fontFamily: FONTS.inter[500],
-          color: COLORS.orange[900],
-        }}
-      >
-        Nenhum pet cadastrado.
-      </Text>
-    );
-  }
-
+export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType) {
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={{
         backgroundColor: COLORS.orange[100],
         borderTopWidth: 2,
