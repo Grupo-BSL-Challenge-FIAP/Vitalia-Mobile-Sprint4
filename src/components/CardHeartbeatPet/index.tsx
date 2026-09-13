@@ -53,11 +53,7 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
             />
 
             <SubTitleOrange
-              title={
-                pet.breedId
-                  ? `Raça #${pet.breedId}`
-                  : "Raça não informada"
-              }
+              title={pet.breedName ?? "Raça não informada"}
               fontFamily={FONTS.inter[500]}
               color={COLORS.orange[900]}
               fontSize={12}
