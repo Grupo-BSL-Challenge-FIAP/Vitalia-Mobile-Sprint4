@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 
-const TOKEN_KEY = "@vitalia:token";
+const TOKEN_KEY = "vitalia.token";
 
 export const tokenStorage = {
   save: async (token: string): Promise<void> => {
@@ -11,7 +11,7 @@ export const tokenStorage = {
   },
 
   get: async (): Promise<string | null> => {
-    return SecureStore.getItemAsync(
+    return await SecureStore.getItemAsync(
       TOKEN_KEY,
     );
   },
