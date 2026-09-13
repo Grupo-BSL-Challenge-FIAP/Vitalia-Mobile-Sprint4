@@ -65,7 +65,8 @@ export default function AccountCreationConfirmationScreen() {
           const pets = JSON.parse(petsData);
 
           const activePet = pets.find(
-            (pet: PetType) => pet.id === Number(activePetId),
+            (pet: PetType) =>
+              pet.id === Number(activePetId),
           );
 
           if (activePet) {
@@ -97,7 +98,10 @@ export default function AccountCreationConfirmationScreen() {
       !responsible.name ||
       !responsible.email ||
       !responsible.password ||
-      !responsible.phone
+      !responsible.phone ||
+      !responsible.cpf ||
+      !responsible.birthDate ||
+      !responsible.address
     ) {
       Alert.alert(
         "Dados incompletos",
@@ -128,6 +132,9 @@ export default function AccountCreationConfirmationScreen() {
           email: responsible.email,
           password: responsible.password,
           phone: responsible.phone,
+          cpf: responsible.cpf,
+          birthDate: responsible.birthDate,
+          address: responsible.address,
         },
 
         pet: {
@@ -138,6 +145,17 @@ export default function AccountCreationConfirmationScreen() {
         },
       },
       {
+        onSuccess: () => {
+          navigate.reset({
+            index: 0,
+            routes: [
+              {
+                name: "TabsDashboardResponsible",
+              },
+            ],
+          });
+        },
+
         onError: (error) => {
           console.error(
             "Erro ao criar conta:",
