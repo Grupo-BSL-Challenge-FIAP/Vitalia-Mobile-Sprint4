@@ -11,6 +11,9 @@ interface CreateAccountData {
     email: string;
     password: string;
     phone: string;
+    cpf: string;
+    birthDate: string;
+    address: string;
   };
 
   pet: {
@@ -39,6 +42,11 @@ export function useCreateAccount() {
         email: responsible.email,
         password: responsible.password,
         phoneNumber: responsible.phone,
+        cpf: responsible.cpf,
+        dateOfBirth: convertDateToApi(
+          responsible.birthDate
+        ),
+        address: responsible.address,
       });
 
       await authService.login({
@@ -49,7 +57,9 @@ export function useCreateAccount() {
       const createdPet = await petService.create({
         name: pet.name,
         sex: pet.gender,
-        birthDate: convertDateToApi(pet.birthDate),
+        birthDate: convertDateToApi(
+          pet.birthDate
+        ),
         weightKg: Number(pet.weight),
         status: "NORMAL",
         breedId: null,
