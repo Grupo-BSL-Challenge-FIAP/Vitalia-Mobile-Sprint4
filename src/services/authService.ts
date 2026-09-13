@@ -7,6 +7,9 @@ export interface RegisterRequest {
   email: string;
   password: string;
   phoneNumber: string;
+  cpf: string;
+  dateOfBirth: string;
+  address: string;
 }
 
 export interface LoginRequest {
@@ -23,20 +26,46 @@ export interface LoginResponse {
   }[];
 }
 
+export interface MeResponse {
+  id: number;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  cpf: string;
+  dateOfBirth: string;
+  address: string;
+  roles: {
+    id: number;
+    name: string;
+  }[];
+}
+
 export const authService = {
-  register: async (data: RegisterRequest) => {
+  register: async (
+    data: RegisterRequest,
+  ): Promise<void> => {
     await api.post("/auth/register", data);
   },
 
-  login: async (data: LoginRequest) => {
+  login: async (
+    data: LoginRequest,
+  ): Promise<LoginResponse> => {
     const response = await api.post<LoginResponse>(
       "/auth/login",
-      data
+      data,
     );
 
     await AsyncStorage.setItem(
       "@vitalia:token",
-      response.data.token
+      response.data.token,
+    );
+
+    return response.data;
+  },
+
+  me: async (): Promise<MeResponse> => {
+    const response = await api.get<MeResponse>(
+      "/auth/me",
     );
 
     return response.data;
