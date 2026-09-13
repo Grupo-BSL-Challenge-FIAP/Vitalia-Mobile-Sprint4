@@ -5,8 +5,8 @@ export interface PetRequest {
   sex: string;
   birthDate: string;
   weightKg: number;
-  status?: "NORMAL" | "ATTENTION" | "RISK";
-  breedId?: number | null;
+  status: "NORMAL" | "ATTENTION" | "CRITICAL";
+  breedId: number | null;
 }
 
 export interface PetResponse {
@@ -20,13 +20,41 @@ export interface PetResponse {
   breedId: number | null;
 }
 
+interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+}
+
 export const petService = {
-  create: async (data: PetRequest): Promise<PetResponse> => {
+  create: async (
+    data: PetRequest,
+  ): Promise<PetResponse> => {
     const response = await api.post<PetResponse>(
       "/pets",
-      data
+      data,
     );
 
     return response.data;
+  },
+
+  getMyPets: async (): Promise<PetResponse[]> => {
+    const response = await api.get<PageResponse<PetResponse>>(
+      "/pets/my-pets",
+      {
+        params: {
+          page: 0,
+          size: 10,
+          sort: "id",
+        },
+      },
+    );
+
+    return response.data.content;
   },
 };
