@@ -14,6 +14,7 @@ import {
 import CardActionPet from "../../components/CardActionPet";
 import ContainerRecordHealth from "../../components/ContainerRecordHealth";
 import ContainerNextEvents from "../../components/ContainerNextEvents";
+import EditPetModal from "../../components/EditPetModal";
 
 export default function PetsDetailScreen() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -35,6 +36,8 @@ export default function PetsDetailScreen() {
   }, []);
 
   const pet = pets.find((pet) => pet.id === activePetId);
+
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   return (
     <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -77,7 +80,10 @@ export default function PetsDetailScreen() {
           <>
             <CardPetDetail pet={pet} />
 
-            <CardInformationDetailPet pet={pet} />
+            <CardInformationDetailPet
+              pet={pet}
+              onEdit={() => setEditModalVisible(true)}
+            />
 
             <View
               style={{
@@ -109,6 +115,12 @@ export default function PetsDetailScreen() {
             <ContainerRecordHealth />
 
             <ContainerNextEvents />
+
+            <EditPetModal
+              visible={editModalVisible}
+              pet={pet}
+              onClose={() => setEditModalVisible(false)}
+            />
           </>
         )}
       </View>
