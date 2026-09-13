@@ -13,6 +13,7 @@ import {
 } from "@expo/vector-icons";
 import CardActionPet from "../../components/CardActionPet";
 import ContainerRecordHealth from "../../components/ContainerRecordHealth";
+import ContainerNextEvents from "../../components/ContainerNextEvents";
 
 export default function PetsDetailScreen() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -106,6 +107,8 @@ export default function PetsDetailScreen() {
             </View>
 
             <ContainerRecordHealth />
+
+            <ContainerNextEvents />
           </>
         )}
       </View>
