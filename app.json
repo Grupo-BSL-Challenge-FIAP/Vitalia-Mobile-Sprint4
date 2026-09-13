@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "plugins": [
       "expo-font",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      "expo-secure-store"
     ],
     "splash": {
       "image": "./src/assets/logo_splash_vitalia2.png",
