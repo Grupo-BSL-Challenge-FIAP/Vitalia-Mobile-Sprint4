@@ -1,31 +1,22 @@
 import { Image, Text, View } from "react-native";
+
 import { COLORS, FONTS } from "../../styles/styles";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ResponsibleType } from "../../types/ResponsibleType";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 export default function HeaderDashboardResponsible() {
-  const [responsible, setResponsible] = useState<ResponsibleType>({
-    name: "",
-    email: "",
-    birthDate: "",
-    cpf: "",
-    phone: "",
-    address: "",
-  });
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useCurrentUser();
 
-  useEffect(() => {
-    const loadedStorage = async () => {
-      const responsibleData = await AsyncStorage.getItem(
-        "@petguardian:responsibleData",
-      );
+  const userName = isLoading
+    ? "..."
+    : user?.fullName ?? "";
 
-      if (responsibleData) {
-        setResponsible(JSON.parse(responsibleData));
-      }
-    };
-    loadedStorage();
-  }, []);
+  const userEmail = isLoading
+    ? ""
+    : user?.email ?? "";
 
   return (
     <View
@@ -54,6 +45,7 @@ export default function HeaderDashboardResponsible() {
             borderRadius: 100,
           }}
         />
+
         <View>
           <Text
             style={{
@@ -62,17 +54,22 @@ export default function HeaderDashboardResponsible() {
               fontSize: 20,
             }}
           >
-            {`Olá, ${responsible.name}!`}
+            {isError
+              ? "Olá!"
+              : `Olá, ${userName}!`}
           </Text>
-          <Text
-            style={{
-              fontFamily: FONTS.inter[500],
-              color: COLORS.white[100],
-              fontSize: 15,
-            }}
-          >
-            {responsible.email}
-          </Text>
+
+          {!isError && (
+            <Text
+              style={{
+                fontFamily: FONTS.inter[500],
+                color: COLORS.white[100],
+                fontSize: 15,
+              }}
+            >
+              {userEmail}
+            </Text>
+          )}
         </View>
       </View>
     </View>
