@@ -195,7 +195,7 @@ export default function CardInformationDetailPet({
 
         <View
           style={{
-            marginHorizontal: 40,
+            marginHorizontal: 60,
           }}
         >
           <Button
@@ -205,8 +205,9 @@ export default function CardInformationDetailPet({
                 pet.id,
               );
             }}
-            paddingVertical={7}
-            fontSize={14}
+            borderRadius={5}
+            paddingVertical={4}
+            fontSize={13}
             colorText={COLORS.white[100]}
           >
             <Text>Editar Informações</Text>
