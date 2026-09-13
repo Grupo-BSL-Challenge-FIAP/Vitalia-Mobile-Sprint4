@@ -1,43 +1,27 @@
 import { ActivityIndicator, Text, View } from "react-native";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import Header from "../../components/Header";
 import CardPetDetail from "../../components/CardPetDetail";
-import { COLORS, FONTS } from "../../styles/styles";
-import { useMyPets } from "../../hooks/useMyPets";
 import CardInformationDetailPet from "../../components/CardInformationDetailPet";
-import {
-  Feather,
-  MaterialIcons,
-} from "@expo/vector-icons";
 import CardActionPet from "../../components/CardActionPet";
 import ContainerRecordHealth from "../../components/ContainerRecordHealth";
 import ContainerNextEvents from "../../components/ContainerNextEvents";
 import EditPetModal from "../../components/EditPetModal";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { COLORS, FONTS } from "../../styles/styles";
+import { useMyPets } from "../../hooks/useMyPets";
+import { RootStackParamList } from "../../navigation/AppNavigator";
+
+type PetDetailRouteProp = RouteProp<RootStackParamList, "PetDetailScreen">;
 
 export default function PetsDetailScreen() {
+  const route = useRoute<PetDetailRouteProp>();
+  const { petId } = route.params;
   const { data: pets = [], isLoading, isError } = useMyPets();
-
-  const [activePetId, setActivePetId] = useState<number | null>(null);
-
-  useEffect(() => {
-    const loadActivePet = async () => {
-      const storedPetId = await AsyncStorage.getItem(
-        "@petguardian:activePetId",
-      );
-
-      if (storedPetId) {
-        setActivePetId(Number(storedPetId));
-      }
-    };
-
-    loadActivePet();
-  }, []);
-
-  const pet = pets.find((pet) => pet.id === activePetId);
-
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const pet = pets.find((pet) => pet.id === petId);
 
   return (
     <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -92,12 +76,13 @@ export default function PetsDetailScreen() {
               }}
             >
               <CardActionPet
-                onPress={() => console.log("teate")}
+                onPress={() => console.log("Histórico:", pet.id)}
                 text="Histórico"
                 icon={<Feather name="file-text" size={40} color="black" />}
               />
+
               <CardActionPet
-                onPress={() => console.log("teate")}
+                onPress={() => console.log("Remover pet:", pet.id)}
                 text="Remover pet"
                 background={COLORS.red[300]}
                 colorText={COLORS.red[600]}
