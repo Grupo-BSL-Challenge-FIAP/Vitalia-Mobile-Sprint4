@@ -7,6 +7,8 @@ import CardPetDetail from "../../components/CardPetDetail";
 import { COLORS, FONTS } from "../../styles/styles";
 import { useMyPets } from "../../hooks/useMyPets";
 import CardInformationDetailPet from "../../components/CardInformationDetailPet";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import CardActionPet from "../../components/CardActionPet";
 
 export default function PetsDetailScreen() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -71,6 +73,33 @@ export default function PetsDetailScreen() {
             <CardPetDetail pet={pet} />
 
             <CardInformationDetailPet pet={pet} />
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+              }}
+            >
+              <CardActionPet
+                onPress={() => console.log("teate")}
+                text="Histórico"
+                icon={<Feather name="file-text" size={40} color="black" />}
+              />
+              <CardActionPet
+                onPress={() => console.log("teate")}
+                text="Remover pet"
+                background={COLORS.red[300]}
+                colorText={COLORS.red[600]}
+                borderColor={COLORS.red[600]}
+                icon={
+                  <MaterialIcons
+                    name="highlight-remove"
+                    size={40}
+                    color={COLORS.red[500]}
+                  />
+                }
+              />
+            </View>
           </>
         )}
       </View>
