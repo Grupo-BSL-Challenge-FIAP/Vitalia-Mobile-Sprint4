@@ -11,6 +11,7 @@ import ResetPasswordScreen from "../screens/ResetPasswordScreen";
 import TabNavigator from "./TabNavigator";
 import { useAuth } from "../contexts/AuthContext";
 import PetsDetailScreen from "../screens/PetsDetailScreen";
+import AccountUserScreen from "../screens/AccountUserScreen";
 
 export type RootStackParamList = {
   HomeLoginCadastroScreen: undefined;
@@ -90,7 +91,7 @@ export default function AppNavigator() {
 
           <Stack.Screen
             name="TabsProfileScreen"
-            component={TabNavigator}
+            component={AccountUserScreen}
           />
 
           <Stack.Screen
