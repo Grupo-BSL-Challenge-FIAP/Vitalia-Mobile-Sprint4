@@ -47,16 +47,15 @@ export const petService = {
   },
 
   getMyPets: async (): Promise<PetResponse[]> => {
-    const response = await api.get<PageResponse<PetResponse>>(
-        "/pets/my-pets",
-        {
-          params: {
-            page: 0,
-            size: 10,
-            sort: "id",
-          },
+    const response = await api.get<PageResponse<PetResponse>>( "/pets/my-pets",
+      {
+        params: {
+          page: 0,
+          size: 10,
+          sort: "id",
         },
-      );
+      },
+    );
 
     return response.data.content;
   },
@@ -71,5 +70,9 @@ export const petService = {
     );
 
     return response.data;
+  },
+
+  remove: async (id: number): Promise<void> => {
+    await api.delete(`/pets/${id}`);
   },
 };
