@@ -1,8 +1,6 @@
 import { Text, View } from "react-native";
-
 import TitleOrange from "../TitleOrange";
 import Button from "../Button";
-
 import { COLORS, FONTS } from "../../styles/styles";
 
 import {
@@ -14,10 +12,12 @@ import { PetResponse } from "../../services/petService";
 
 interface CardInformationDetailPetProps {
   pet: PetResponse;
+  onEdit: () => void;
 }
 
 export default function CardInformationDetailPet({
   pet,
+  onEdit
 }: CardInformationDetailPetProps) {
   const formatDate = (date?: string) => {
     if (!date) {
@@ -199,12 +199,7 @@ export default function CardInformationDetailPet({
           }}
         >
           <Button
-            onPress={() => {
-              console.log(
-                "Editar pet:",
-                pet.id,
-              );
-            }}
+            onPress={onEdit}
             borderRadius={5}
             paddingVertical={4}
             fontSize={13}
