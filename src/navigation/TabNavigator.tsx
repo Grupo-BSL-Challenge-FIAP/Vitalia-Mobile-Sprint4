@@ -7,6 +7,7 @@ import { View } from "react-native";
 import PageUnderDevelopmentScreen from "../screens/PageUnderDevelopmentScreen";
 import AllPetsScreen from "../screens/AllPetsScreen";
 import AccountUserScreen from "../screens/AccountUserScreen";
+import NotificationsScreen from "../screens/NotificationsScreen";
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -103,7 +104,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Notificações"
-        component={PageUnderDevelopmentScreen}
+        component={NotificationsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
