@@ -17,4 +17,13 @@ export const userService = {
       data,
     );
   },
+
+deleteMe: async (): Promise<void> => {
+  console.log(
+    "DELETE API:",
+    `${api.defaults.baseURL}/users/me`,
+  );
+
+  await api.delete("/users/me");
+},
 };
