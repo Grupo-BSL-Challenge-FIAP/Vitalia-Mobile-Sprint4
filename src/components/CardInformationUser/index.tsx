@@ -1,24 +1,15 @@
-import {
-  ActivityIndicator,
-  Alert,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import TitleOrange from "../TitleOrange";
-import { COLORS, FONTS } from "../../styles/styles";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useAuth } from "../../contexts/AuthContext";
-import { queryClient } from "../../api/queryClient";
 import { useState } from "react";
+import TitleOrange from "../TitleOrange";
 import DeleteAccountModal from "../DeleteAccountModal";
+import LogoutModal from "../LogoutModal";
+import { COLORS, FONTS } from "../../styles/styles";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 export default function CardInformationUser() {
   const { data: user, isLoading, isError } = useCurrentUser();
-
-  const { logout } = useAuth();
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
     useState(false);
 
@@ -48,33 +39,6 @@ export default function CardInformationUser() {
     }
 
     return phone;
-  };
-
-  const handleLogout = () => {
-    Alert.alert("Sair da conta", "Deseja realmente sair da sua conta?", [
-      {
-        text: "Cancelar",
-        style: "cancel",
-      },
-      {
-        text: "Sair",
-        style: "destructive",
-
-        onPress: async () => {
-          try {
-            await AsyncStorage.removeItem("@petguardian:activePetId");
-
-            await logout();
-
-            queryClient.clear();
-          } catch (error) {
-            console.error("Erro ao sair da conta:", error);
-
-            Alert.alert("Erro", "Não foi possível sair da conta.");
-          }
-        },
-      },
-    ]);
   };
 
   if (isLoading) {
@@ -199,7 +163,11 @@ export default function CardInformationUser() {
               paddingBottom: 5,
             }}
           >
-            <FontAwesome name="phone" size={24} color={COLORS.orange[900]} />
+            <FontAwesome
+              name="phone"
+              size={24}
+              color={COLORS.orange[900]}
+            />
 
             <TitleOrange
               title="Telefone"
@@ -290,7 +258,7 @@ export default function CardInformationUser() {
         {/* SAIR DA CONTA */}
 
         <TouchableOpacity
-          onPress={handleLogout}
+          onPress={() => setLogoutModalVisible(true)}
           activeOpacity={0.8}
           style={{
             flexDirection: "row",
@@ -355,6 +323,12 @@ export default function CardInformationUser() {
           </Text>
         </TouchableOpacity>
       </View>
+
+      <LogoutModal
+        visible={logoutModalVisible}
+        onClose={() => setLogoutModalVisible(false)}
+      />
+
       <DeleteAccountModal
         visible={deleteAccountModalVisible}
         onClose={() => setDeleteAccountModalVisible(false)}
