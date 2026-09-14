@@ -1,11 +1,26 @@
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import TitleOrange from "../TitleOrange";
 import { COLORS, FONTS } from "../../styles/styles";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useAuth } from "../../contexts/AuthContext";
+import { queryClient } from "../../api/queryClient";
+import { useState } from "react";
+import DeleteAccountModal from "../DeleteAccountModal";
 
 export default function CardInformationUser() {
   const { data: user, isLoading, isError } = useCurrentUser();
+
+  const { logout } = useAuth();
+  const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
+    useState(false);
 
   const formatDate = (date?: string | null) => {
     if (!date) {
@@ -33,6 +48,33 @@ export default function CardInformationUser() {
     }
 
     return phone;
+  };
+
+  const handleLogout = () => {
+    Alert.alert("Sair da conta", "Deseja realmente sair da sua conta?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Sair",
+        style: "destructive",
+
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem("@petguardian:activePetId");
+
+            await logout();
+
+            queryClient.clear();
+          } catch (error) {
+            console.error("Erro ao sair da conta:", error);
+
+            Alert.alert("Erro", "Não foi possível sair da conta.");
+          }
+        },
+      },
+    ]);
   };
 
   if (isLoading) {
@@ -225,6 +267,8 @@ export default function CardInformationUser() {
         </View>
       </View>
 
+      {/* CONTA */}
+
       <View
         style={{
           marginTop: 30,
@@ -243,10 +287,10 @@ export default function CardInformationUser() {
           Conta
         </Text>
 
+        {/* SAIR DA CONTA */}
+
         <TouchableOpacity
-          onPress={() => {
-            console.log("Sair da conta");
-          }}
+          onPress={handleLogout}
           activeOpacity={0.8}
           style={{
             flexDirection: "row",
@@ -277,10 +321,10 @@ export default function CardInformationUser() {
           </Text>
         </TouchableOpacity>
 
+        {/* EXCLUIR CONTA */}
+
         <TouchableOpacity
-          onPress={() => {
-            console.log("Excluir conta");
-          }}
+          onPress={() => setDeleteAccountModalVisible(true)}
           activeOpacity={0.8}
           style={{
             flexDirection: "row",
@@ -311,6 +355,10 @@ export default function CardInformationUser() {
           </Text>
         </TouchableOpacity>
       </View>
+      <DeleteAccountModal
+        visible={deleteAccountModalVisible}
+        onClose={() => setDeleteAccountModalVisible(false)}
+      />
     </View>
   );
 }
