@@ -6,6 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 import PageUnderDevelopmentScreen from "../screens/PageUnderDevelopmentScreen";
 import AllPetsScreen from "../screens/AllPetsScreen";
+import AccountUserScreen from "../screens/AccountUserScreen";
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -132,7 +133,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Perfil"
-        component={PageUnderDevelopmentScreen}
+        component={AccountUserScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
