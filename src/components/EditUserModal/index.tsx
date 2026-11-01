@@ -257,9 +257,15 @@ export default function EditUserModal({
                 }}
               >
                 <View>
-                  <Image
+                <Image
                     source={
-                      selectedImage ? { uri: selectedImage } : getUserImage()
+                      selectedImage
+                        ? { uri: selectedImage }
+                        : getUserImage(
+                            undefined,
+                            undefined,
+                            user.id,
+                          )
                     }
                     style={{
                       width: 135,
