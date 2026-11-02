@@ -4,10 +4,10 @@ import TextLink from "../TextLink";
 import CardPet from "../CardPet";
 import { COLORS, FONTS } from "../../styles/styles";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 import { useMyPets } from "../../hooks/useMyPets";
 import { useImages } from "../../contexts/ImageContext";
+import { useActivePet } from "../../contexts/ActivePetContext";
 
 export default function YourPets() {
   const {
@@ -17,38 +17,18 @@ export default function YourPets() {
   } = useMyPets();
 
   const { getPetImage } = useImages();
+  const { activePetId, setActivePet, isLoadingActivePet } = useActivePet();
+  const activePet = pets.find((pet) => pet.id === activePetId) ?? pets[0];
 
-  const [petActive, setPetActive] =
-    useState<number | null>(null);
-
-  const activePet =
-    pets.find((pet) => pet.id === petActive) ??
-    pets[0];
-
-  const getPetAgeLabel = (
-    birthDate?: string,
-  ) => {
+  const getPetAgeLabel = ( birthDate?: string,) => {
     if (!birthDate) {
       return "";
     }
-    
-    const [year, month, day] = birthDate
-      .split("-")
-      .map(Number);
-
-    const birth = new Date(
-      year,
-      month - 1,
-      day,
-    );
-
+    const [year, month, day] = birthDate.split("-").map(Number);
+    const birth = new Date( year, month - 1, day);
     const today = new Date();
 
-    let months =
-      (today.getFullYear() -
-        birth.getFullYear()) *
-        12 +
-      (today.getMonth() - birth.getMonth());
+    let months = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
 
     if (today.getDate() < birth.getDate()) {
       months--;
@@ -76,15 +56,11 @@ export default function YourPets() {
   };
 
   const getSpeciesIdFromPet = (pet: any) => {
-    if (
-      typeof pet?.speciesId === "number"
-    ) {
+    if (typeof pet?.speciesId === "number") {
       return pet.speciesId;
     }
 
-    if (
-      typeof pet?.breed?.speciesId === "number"
-    ) {
+    if (typeof pet?.breed?.speciesId === "number") {
       return pet.breed.speciesId;
     }
 
@@ -92,52 +68,20 @@ export default function YourPets() {
   };
 
   useEffect(() => {
-    const loadActivePet = async () => {
-      if (pets.length === 0) {
-        return;
-      }
+    if ( isLoadingActivePet || pets.length === 0) {
+      return;
+    }
 
-      const activePetStorage =
-        await AsyncStorage.getItem(
-          "@petguardian:activePetId",
-        );
+    const petExists = activePetId !== null && pets.some((pet) => pet.id === activePetId);
 
-      if (activePetStorage) {
-        const activeId = Number(
-          activePetStorage,
-        );
+    if (!petExists) {
+      setActivePet(pets[0].id);
+    }
+  }, [pets, activePetId, isLoadingActivePet]);
 
-        const petExists = pets.some(
-          (pet) => pet.id === activeId,
-        );
 
-        if (petExists) {
-          setPetActive(activeId);
-
-          return;
-        }
-      }
-
-      setPetActive(pets[0].id);
-
-      await AsyncStorage.setItem(
-        "@petguardian:activePetId",
-        String(pets[0].id),
-      );
-    };
-
-    loadActivePet();
-  }, [pets]);
-
-  const handleActivePet = async (
-    id: number,
-  ) => {
-    setPetActive(id);
-
-    await AsyncStorage.setItem(
-      "@petguardian:activePetId",
-      String(id),
-    );
+  const handleActivePet = async (id: number) => {
+    await setActivePet(id);
   };
 
   return (
@@ -235,12 +179,8 @@ export default function YourPets() {
                     width: 60,
                     height: 60,
                     borderRadius: 100,
-                    borderWidth:
-                      petActive === pet.id
-                        ? 3
-                        : 0,
-                    borderColor:
-                      COLORS.orange[500],
+                    borderWidth: activePetId === pet.id ? 3 : 0,
+                    borderColor: COLORS.orange[500],
                   }}
                 />
               </TouchableOpacity>
