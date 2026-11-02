@@ -92,6 +92,7 @@ export default function CardInformationUser() {
           paddingBottom: 16,
           borderRadius: 10,
           gap: 11,
+          boxShadow: '0px 4px 7px rgba(0, 0, 0, 0.25)',
         }}
       >
         {/* NASCIMENTO */}
