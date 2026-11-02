@@ -123,7 +123,6 @@ export default function EditUserModal({
     if (
       !fullName.trim() ||
       !dateOfBirth.trim() ||
-      !cpf.trim() ||
       !phoneNumber.trim() ||
       !address.trim()
     ) {
@@ -135,12 +134,6 @@ export default function EditUserModal({
     const cleanCpf = cpf.replace(/\D/g, "");
 
     const cleanPhone = phoneNumber.replace(/\D/g, "");
-
-    if (cleanCpf.length !== 11) {
-      Alert.alert("CPF inválido", "Informe um CPF válido.");
-
-      return;
-    }
 
     if (cleanPhone.length !== 10 && cleanPhone.length !== 11) {
       Alert.alert("Telefone inválido", "Informe um telefone válido.");
