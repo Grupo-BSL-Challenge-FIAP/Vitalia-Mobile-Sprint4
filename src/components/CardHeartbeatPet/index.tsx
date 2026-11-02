@@ -3,21 +3,58 @@ import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../TitleOrange";
 import SubTitleOrange from "../SubTitleOrange";
 import BpmCircle from "../BpmCircle";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Feather from '@expo/vector-icons/Feather';
 import Entypo from "@expo/vector-icons/Entypo";
 import { CardHeartbeatPetType } from '../../types/CardHeartbeatPetType';
 import { useImages } from "../../contexts/ImageContext";
 import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
+import { usePetAppointments } from "../../hooks/usePetAppointments";
 
 export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType) {
   const { getPetImage } = useImages();
   const { data: measurement, isLoading } = useLatestMeasurement(pet.id);
+  const { data: appointments = [], isLoading: isLoadingAppointments } = usePetAppointments(pet.id);
 
   const heartRate = isLoading
     ? "..."
     : measurement
       ? Math.round(measurement.heartRate)
       : null;
+
+  const nextAppointment = appointments.filter((appointment) => {
+    return (
+      new Date(appointment.appointmentDate).getTime() > Date.now() &&
+      appointment.status === "SCHEDULED"
+    );
+  }).sort((a, b) =>
+      new Date(a.appointmentDate).getTime() -
+      new Date(b.appointmentDate).getTime()
+  )[0];
+
+  const getAppointmentLabel = () => {
+    if (isLoadingAppointments) {
+      return "Carregando consulta...";
+    }
+
+    if (!nextAppointment) {
+      return "Tudo em dia!";
+    }
+
+    const appointmentDate = new Date(nextAppointment.appointmentDate);
+    const difference = appointmentDate.getTime() - Date.now();
+    const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+    if (days <= 0) {
+      return "Consulta hoje";
+    }
+
+    if (days === 1) {
+      return "Consulta amanhã";
+    }
+
+    return `Consulta em ${days} dias`;
+  };
 
   const getSpeciesIdFromPet = () => {
     if (typeof pet?.speciesId === "number") {
@@ -110,14 +147,22 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
             flexDirection: "row",
             alignItems: "center",
             gap: 5,
-            marginLeft: -60,
+            marginLeft: !nextAppointment ? -80 : -40,
           }}
         >
-          <MaterialCommunityIcons
-            name="needle"
-            size={24}
-            color={COLORS.orange[900]}
-          />
+          {!isLoadingAppointments && !nextAppointment ? (
+            <Feather
+              name="check-circle"
+              size={24}
+              color={COLORS.orange[900]}
+            />
+          ) : (
+            <FontAwesome6
+              name="calendar-check"
+              size={20}
+              color={COLORS.orange[900]}
+            />
+          )}
 
           <Text
             style={{
@@ -126,7 +171,7 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
               color: COLORS.orange[900],
             }}
           >
-            Vacina em 3 dias
+            {getAppointmentLabel()}
           </Text>
         </View>
       </View>
