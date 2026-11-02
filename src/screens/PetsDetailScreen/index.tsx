@@ -36,6 +36,7 @@ export default function PetsDetailScreen() {
         style={{
           paddingHorizontal: 12,
           marginTop: 20,
+          marginBottom: 30,
           gap: 30,
         }}
       >
@@ -104,7 +105,7 @@ export default function PetsDetailScreen() {
 
             <ContainerRecordHealth petId={petId} />
 
-            <ContainerNextEvents />
+            <ContainerNextEvents petId={pet.id} />
 
             <EditPetModal
               visible={editModalVisible}
