@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { Image, View } from "react-native";
 import TitleOrange from "../TitleOrange";
 import { COLORS, FONTS } from "../../styles/styles";
 import ContainerTitleSubTitle from "../ContainerTitleSubTitle";
@@ -7,8 +7,25 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import CardStatus from "../CardStatus";
 import ContainerStatus from "../ContainerStatus";
 import ButtonLink from "../ButtonLink";
+import { useActivePet } from "../../contexts/ActivePetContext";
+import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
 
 export default function StatusPet() {
+  const { activePetId } = useActivePet();
+  const { data: measurement, isLoading } = useLatestMeasurement(activePetId);
+
+  const getSleepQuality = (sleepHours?: number) => {
+    if (sleepHours === undefined) return "--";
+
+    if (sleepHours >= 10) return "Boa";
+    if (sleepHours >= 8) return "Regular";
+
+    return "Ruim";
+  };
+
+  const sleepQuality = isLoading ? "..." : getSleepQuality(measurement?.sleepHours);
+  const heartRate = isLoading ? "..." : measurement ? `${Math.round(measurement.heartRate)} Bpm` : "--";
+
   return (
     <View
       style={{
@@ -29,7 +46,7 @@ export default function StatusPet() {
           <View>
             <ContainerTitleSubTitle
               alignItems="flex-start"
-              textTitle="Boa"
+              textTitle={sleepQuality}
               fontFamilyTitle={FONTS.inter[700]}
               fontSizeTiTleOrange={24}
               colorTitleOrange={COLORS.orange[700]}
@@ -52,7 +69,7 @@ export default function StatusPet() {
           <View>
             <ContainerTitleSubTitle
               alignItems="flex-start"
-              textTitle="140 Bpm"
+              textTitle={heartRate}
               fontFamilyTitle={FONTS.inter[700]}
               fontSizeTiTleOrange={24}
               colorTitleOrange={COLORS.orange[700]}
@@ -102,15 +119,15 @@ export default function StatusPet() {
           </View>
         </CardStatus>
         <View style={{ width: "100%" }}>
-            <ButtonLink
-                route="PetsScreen"
-                fontSize={15}
-                backgroundColor={COLORS.orange[700]}
-                borderWidth={2}
-                fontFamily={FONTS.inter[700]}
-            >
-                Ver mais detalhes na página do pet
-            </ButtonLink>
+          <ButtonLink
+            route="PetsScreen"
+            fontSize={15}
+            backgroundColor={COLORS.orange[700]}
+            borderWidth={2}
+            fontFamily={FONTS.inter[700]}
+          >
+            Ver mais detalhes na página do pet
+          </ButtonLink>
         </View>
       </ContainerStatus>
     </View>
