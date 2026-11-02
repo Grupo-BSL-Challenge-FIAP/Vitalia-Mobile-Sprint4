@@ -7,9 +7,17 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { CardHeartbeatPetType } from '../../types/CardHeartbeatPetType';
 import { useImages } from "../../contexts/ImageContext";
+import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
 
 export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType) {
   const { getPetImage } = useImages();
+  const { data: measurement, isLoading } = useLatestMeasurement(pet.id);
+
+  const heartRate = isLoading
+    ? "..."
+    : measurement
+      ? Math.round(measurement.heartRate)
+      : null;
 
   const getSpeciesIdFromPet = () => {
     if (typeof pet?.speciesId === "number") {
@@ -84,7 +92,10 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
           </View>
         </View>
 
-        <BpmCircle />
+        <BpmCircle
+          bpm={heartRate}
+          status={pet.status}
+        />
       </View>
 
       <View
