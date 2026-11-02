@@ -102,7 +102,7 @@ export default function PetsDetailScreen() {
               />
             </View>
 
-            <ContainerRecordHealth />
+            <ContainerRecordHealth petId={petId} />
 
             <ContainerNextEvents />
 
