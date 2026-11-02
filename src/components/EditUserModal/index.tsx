@@ -200,7 +200,7 @@ export default function EditUserModal({
             flex: 1,
             backgroundColor: "rgba(0, 0, 0, 0.55)",
             justifyContent: "center",
-            paddingHorizontal: 25,
+            paddingHorizontal: 15,
           }}
         >
           <View
@@ -233,7 +233,7 @@ export default function EditUserModal({
                     color: COLORS.orange[900],
                   }}
                 >
-                  Editar dados
+                  Editar perfil
                 </Text>
 
                 <TouchableOpacity
@@ -244,7 +244,7 @@ export default function EditUserModal({
                     right: 0,
                   }}
                 >
-                  <AntDesign name="close-circle" size={34} color="black" />
+                  <AntDesign name="close-circle" size={34} color={COLORS.orange[900]} />
                 </TouchableOpacity>
               </View>
 
@@ -253,59 +253,77 @@ export default function EditUserModal({
               <View
                 style={{
                   alignItems: "center",
-                  marginBottom: 35,
+                  marginBottom: 30,
                 }}
               >
                 <View>
-                <Image
-                    source={
-                      selectedImage
-                        ? { uri: selectedImage }
-                        : getUserImage(
-                            undefined,
-                            undefined,
-                            user.id,
-                          )
-                    }
+                  <View
                     style={{
-                      width: 135,
-                      height: 135,
-                      borderRadius: 100,
-                      borderWidth: 2,
-                      borderColor: COLORS.orange[900],
+                      boxShadow: '1px 4px 10px 4px rgba(0, 0, 0, 0.25)',
+                      borderRadius: 10,
                     }}
-                  />
+                  >
+                    <Image
+                        source={
+                          selectedImage
+                            ? { uri: selectedImage }
+                            : getUserImage(
+                                undefined,
+                                undefined,
+                                user.id,
+                              )
+                        }
+                        style={{
+                          width: 100,
+                          height: 100,
+                          borderRadius: 10,
+                        }}
+                      />
+                  </View>
 
                   <TouchableOpacity
                     onPress={handlePickImage}
                     style={{
                       position: "absolute",
-                      bottom: 0,
-                      right: 5,
-                      width: 38,
-                      height: 38,
+                      bottom: -12,
+                      right: -10,
+                      width: 30,
+                      height: 30,
                       borderRadius: 20,
                       backgroundColor: COLORS.orange[900],
+                      borderWidth: 1,
+                      borderColor: COLORS.white[100],
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <AntDesign
                       name="edit"
-                      size={20}
+                      size={15}
                       color={COLORS.white[100]}
                     />
                   </TouchableOpacity>
                 </View>
+
+                <Text
+                  style={{
+                    fontFamily: FONTS.inter[400],
+                    fontSize: 12,
+                    color: COLORS.gray[300],
+                    marginTop: 27,
+                  }}
+                >
+                  Toque em um campo para editar as informações.
+                </Text>
               </View>
 
               {/* NOME */}
 
               <Text
                 style={{
-                  fontFamily: FONTS.inter[700],
+                  fontFamily: FONTS.inter[600],
                   color: COLORS.orange[900],
-                  fontSize: 17,
+                  fontSize: 13,
                   marginBottom: 6,
                 }}
               >
@@ -316,10 +334,11 @@ export default function EditUserModal({
                 value={fullName}
                 onChangeText={setFullName}
                 style={{
-                  backgroundColor: COLORS.orange[100],
-                  borderBottomWidth: 3,
-                  borderBottomColor: COLORS.orange[900],
-                  borderRadius: 7,
+                  backgroundColor: COLORS.white[500],
+                  borderWidth: 1,
+                  borderBottomWidth: 1,
+                  borderColor: COLORS.orange[210],
+                  borderRadius: 9,  
                   paddingHorizontal: 12,
                   paddingVertical: 10,
                   marginBottom: 22,
@@ -333,9 +352,9 @@ export default function EditUserModal({
 
               <Text
                 style={{
-                  fontFamily: FONTS.inter[700],
+                  fontFamily: FONTS.inter[600],
                   color: COLORS.orange[900],
-                  fontSize: 17,
+                  fontSize: 13,
                   marginBottom: 6,
                 }}
               >
@@ -348,42 +367,11 @@ export default function EditUserModal({
                 placeholder="dd/mm/aaaa"
                 keyboardType="numeric"
                 style={{
-                  backgroundColor: COLORS.orange[100],
-                  borderBottomWidth: 3,
-                  borderBottomColor: COLORS.orange[900],
-                  borderRadius: 7,
-                  paddingHorizontal: 12,
-                  paddingVertical: 10,
-                  marginBottom: 22,
-                  fontFamily: FONTS.inter[400],
-                  fontSize: 17,
-                  color: COLORS.orange[900],
-                }}
-              />
-
-              {/* CPF */}
-
-              <Text
-                style={{
-                  fontFamily: FONTS.inter[700],
-                  color: COLORS.orange[900],
-                  fontSize: 17,
-                  marginBottom: 6,
-                }}
-              >
-                CPF
-              </Text>
-
-              <TextInput
-                value={cpf}
-                onChangeText={(value) => setCpf(formatCpf(value))}
-                keyboardType="numeric"
-                maxLength={14}
-                style={{
-                  backgroundColor: COLORS.orange[100],
-                  borderBottomWidth: 3,
-                  borderBottomColor: COLORS.orange[900],
-                  borderRadius: 7,
+                  backgroundColor: COLORS.white[500],
+                  borderWidth: 1,
+                  borderBottomWidth: 1,
+                  borderColor: COLORS.orange[210],
+                  borderRadius: 9,
                   paddingHorizontal: 12,
                   paddingVertical: 10,
                   marginBottom: 22,
@@ -397,9 +385,9 @@ export default function EditUserModal({
 
               <Text
                 style={{
-                  fontFamily: FONTS.inter[700],
+                  fontFamily: FONTS.inter[600],
                   color: COLORS.orange[900],
-                  fontSize: 17,
+                  fontSize: 13,
                   marginBottom: 6,
                 }}
               >
@@ -412,10 +400,11 @@ export default function EditUserModal({
                 keyboardType="phone-pad"
                 maxLength={15}
                 style={{
-                  backgroundColor: COLORS.orange[100],
-                  borderBottomWidth: 3,
-                  borderBottomColor: COLORS.orange[900],
-                  borderRadius: 7,
+                  backgroundColor: COLORS.white[500],
+                  borderWidth: 1,
+                  borderBottomWidth: 1,
+                  borderColor: COLORS.orange[210],
+                  borderRadius: 9,
                   paddingHorizontal: 12,
                   paddingVertical: 10,
                   marginBottom: 22,
@@ -429,9 +418,9 @@ export default function EditUserModal({
 
               <Text
                 style={{
-                  fontFamily: FONTS.inter[700],
+                  fontFamily: FONTS.inter[600],
                   color: COLORS.orange[900],
-                  fontSize: 17,
+                  fontSize: 13,
                   marginBottom: 6,
                 }}
               >
@@ -443,10 +432,11 @@ export default function EditUserModal({
                 onChangeText={setAddress}
                 placeholder="Digite seu endereço"
                 style={{
-                  backgroundColor: COLORS.orange[100],
-                  borderBottomWidth: 3,
-                  borderBottomColor: COLORS.orange[900],
-                  borderRadius: 7,
+                  backgroundColor: COLORS.white[500],
+                  borderWidth: 1,
+                  borderBottomWidth: 1,
+                  borderColor: COLORS.orange[210],
+                  borderRadius: 9,
                   paddingHorizontal: 12,
                   paddingVertical: 10,
                   marginBottom: 30,
@@ -456,31 +446,71 @@ export default function EditUserModal({
                 }}
               />
 
-              {/* SALVAR */}
-
-              <TouchableOpacity
-                onPress={handleSave}
-                disabled={updateUserMutation.isPending}
+              <View
                 style={{
-                  backgroundColor: COLORS.orange[900],
-                  paddingVertical: 13,
-                  borderRadius: 7,
-                  alignItems: "center",
-                  opacity: updateUserMutation.isPending ? 0.6 : 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between'
                 }}
               >
-                <Text
+
+                {/* CANCELAR */}
+
+                <TouchableOpacity
+                  onPress={onClose}
+                  disabled={updateUserMutation.isPending}
                   style={{
-                    fontFamily: FONTS.inter[700],
-                    fontSize: 17,
-                    color: COLORS.white[100],
+
+                    borderRadius: 7,
+                    alignItems: "center",
+                    justifyContent: 'center',
+                    opacity: updateUserMutation.isPending ? 0.6 : 1,
                   }}
                 >
-                  {updateUserMutation.isPending
-                    ? "Salvando..."
-                    : "Salvar informações"}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.inter[700],
+                      paddingVertical: 8,
+                      paddingHorizontal: 32,
+                      fontSize: 17,
+                      color: COLORS.orange[900],
+                      borderWidth: 2,
+                      borderColor: COLORS.orange[900],
+                      borderRadius: 5,
+                    }}
+                  >
+                    Cancelar
+                  </Text>
+                </TouchableOpacity>
+
+                {/* SALVAR */}
+
+                <TouchableOpacity
+                  onPress={handleSave}
+                  disabled={updateUserMutation.isPending}
+                  style={{
+                    backgroundColor: COLORS.orange[900],
+                    paddingVertical: 9,
+                    paddingHorizontal: 42,
+                    borderRadius: 7,
+                    alignItems: "center",
+                    justifyContent: 'center',
+                    opacity: updateUserMutation.isPending ? 0.6 : 1,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: FONTS.inter[700],
+                      fontSize: 17,
+                      color: COLORS.white[100],
+                    }}
+                  >
+                    {updateUserMutation.isPending
+                      ? "Salvando..."
+                      : "Salvar"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
             </ScrollView>
           </View>
         </View>
