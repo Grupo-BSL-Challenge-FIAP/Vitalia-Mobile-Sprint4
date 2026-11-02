@@ -6,6 +6,7 @@ import TitleOrange from "../TitleOrange";
 import { View } from "react-native";
 import ContainerTitleSubTitle from "../ContainerTitleSubTitle";
 import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
+import { usePetAppointments } from "../../hooks/usePetAppointments";
 
 interface ContainerRecordHealthProps {
   petId: number;
@@ -15,6 +16,43 @@ export default function ContainerRecordHealth({
   petId,
 }: ContainerRecordHealthProps) {
   const { data: measurement, isLoading } = useLatestMeasurement(petId);
+  const { data: appointments = [], isLoading: isLoadingAppointments } = usePetAppointments(petId);
+
+  const nextAppointment = appointments.filter((appointment) => {
+    return (
+      new Date(appointment.appointmentDate).getTime() > Date.now() &&
+      appointment.status === "SCHEDULED"
+    );
+  }).sort((a, b) =>
+      new Date(a.appointmentDate).getTime() -
+      new Date(b.appointmentDate).getTime()
+  )[0];
+
+  const formatAppointmentDate = (appointmentDate?: string) => {
+    if (!appointmentDate) return "Nenhuma Consulta";
+
+    const [date] = appointmentDate.split("T");
+    const [, month, day] = date.split("-");
+
+    const months = [
+      "janeiro",
+      "fevereiro",
+      "março",
+      "abril",
+      "maio",
+      "junho",
+      "julho",
+      "agosto",
+      "setembro",
+      "outubro",
+      "novembro",
+      "dezembro",
+    ];
+
+    return `${Number(day)} de ${months[Number(month) - 1]}`;
+  };
+
+  const nextAppointmentDate = isLoadingAppointments ? "..." : formatAppointmentDate(nextAppointment?.appointmentDate);
 
   const getSleepQuality = (sleepHours?: number) => {
     if (sleepHours === undefined) return "--";
@@ -104,7 +142,7 @@ export default function ContainerRecordHealth({
             <FontAwesome6 name="calendar-check" size={40} color="black" />
             <ContainerTitleSubTitle
               alignItems="center"
-              textTitle="13 de outubro"
+              textTitle={nextAppointmentDate}
               fontFamilyTitle={FONTS.inter[700]}
               fontSizeTiTleOrange={20}
               colorTitleOrange={COLORS.orange[700]}
