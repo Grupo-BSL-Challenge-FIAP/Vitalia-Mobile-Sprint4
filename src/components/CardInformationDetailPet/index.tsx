@@ -46,10 +46,12 @@ export default function CardInformationDetailPet({
         title="Informações"
         color={COLORS.orange[900]}
         fontFamily={FONTS.inter[700]}
+        fontSize={26}
       />
 
       <View
         style={{
+          marginTop: 10,
           marginHorizontal: 20,
           borderColor: COLORS.orange[900],
           borderWidth: 2,
@@ -58,6 +60,7 @@ export default function CardInformationDetailPet({
           paddingBottom: 16,
           borderRadius: 10,
           gap: 11,
+          boxShadow: '0px 0px 10px 2px rgba(0, 0, 0, 0.25)',
         }}
       >
         {/* SEXO */}

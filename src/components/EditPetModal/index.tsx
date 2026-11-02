@@ -200,45 +200,23 @@ export default function EditPetModal({
         "Erro ao enviar imagem do pet para o Cloudinary:",
         error,
       );
-
-      Alert.alert(
-        "Erro",
-        "Não foi possível enviar a imagem do pet.",
-      );
-
       return;
     }
 
-    updatePetMutation.mutate(
-      {
+    updatePetMutation.mutate({
         id: pet.id,
-
         data: {
           name: name.trim(),
           sex: sex.trim(),
-
-          birthDate:
-            formatDateToApi(
-              birthDate,
-            ),
-
+          birthDate:formatDateToApi(birthDate,),
           weightKg: parsedWeight,
-
           status: pet.status,
-
-          // Agora enviamos a raça
-          // escolhida de verdade.
           breedId: selectedBreedId,
         },
       },
       {
         onSuccess: () => {
           onClose();
-
-          Alert.alert(
-            "Sucesso",
-            "Informações do pet atualizadas.",
-          );
         },
 
         onError: (error) => {

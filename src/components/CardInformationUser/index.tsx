@@ -1,17 +1,11 @@
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
 import TitleOrange from "../TitleOrange";
-import DeleteAccountModal from "../DeleteAccountModal";
-import LogoutModal from "../LogoutModal";
 import { COLORS, FONTS } from "../../styles/styles";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 export default function CardInformationUser() {
   const { data: user, isLoading, isError } = useCurrentUser();
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-  const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
-    useState(false);
 
   const formatDate = (date?: string | null) => {
     if (!date) {
@@ -98,6 +92,7 @@ export default function CardInformationUser() {
           paddingBottom: 16,
           borderRadius: 10,
           gap: 11,
+          boxShadow: '0px 4px 7px rgba(0, 0, 0, 0.25)',
         }}
       >
         {/* NASCIMENTO */}
@@ -234,105 +229,6 @@ export default function CardInformationUser() {
           </Text>
         </View>
       </View>
-
-      {/* CONTA */}
-
-      <View
-        style={{
-          marginTop: 30,
-          marginHorizontal: 10,
-          gap: 12,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: FONTS.inter[700],
-            fontSize: 16,
-            color: COLORS.orange[900],
-            marginBottom: 2,
-          }}
-        >
-          Conta
-        </Text>
-
-        {/* SAIR DA CONTA */}
-
-        <TouchableOpacity
-          onPress={() => setLogoutModalVisible(true)}
-          activeOpacity={0.8}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-            paddingVertical: 12,
-            borderWidth: 2,
-            borderColor: COLORS.orange[900],
-            borderRadius: 10,
-            backgroundColor: COLORS.white[100],
-          }}
-        >
-          <MaterialCommunityIcons
-            name="logout"
-            size={22}
-            color={COLORS.orange[900]}
-          />
-
-          <Text
-            style={{
-              fontFamily: FONTS.inter[700],
-              fontSize: 15,
-              color: COLORS.orange[900],
-            }}
-          >
-            Sair da conta
-          </Text>
-        </TouchableOpacity>
-
-        {/* EXCLUIR CONTA */}
-
-        <TouchableOpacity
-          onPress={() => setDeleteAccountModalVisible(true)}
-          activeOpacity={0.8}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-            paddingVertical: 12,
-            borderWidth: 2,
-            borderColor: COLORS.red[600],
-            borderRadius: 10,
-            backgroundColor: COLORS.red[300],
-          }}
-        >
-          <MaterialCommunityIcons
-            name="delete-outline"
-            size={23}
-            color={COLORS.red[600]}
-          />
-
-          <Text
-            style={{
-              fontFamily: FONTS.inter[700],
-              fontSize: 15,
-              color: COLORS.red[600],
-            }}
-          >
-            Excluir conta
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <LogoutModal
-        visible={logoutModalVisible}
-        onClose={() => setLogoutModalVisible(false)}
-      />
-
-      <DeleteAccountModal
-        visible={deleteAccountModalVisible}
-        onClose={() => setDeleteAccountModalVisible(false)}
-      />
     </View>
   );
 }

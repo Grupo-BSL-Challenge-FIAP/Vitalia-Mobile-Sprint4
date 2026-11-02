@@ -7,12 +7,15 @@ export const COLORS = {
     orange: {
         100: '#FAEBE7',
         200: '#F2C3B1',
+        210: '#E3C9BD',
         300: '#FAA182',
         500: '#D85B2F',
         700: '#983C1B',
         800: '#4a1b0c35',
         875: '#4a1b0c75',
         900: '#4A1B0C',
+        950: '#4A1B0C50',
+        970: '#4A1B0C70'
     },
 
     // White
@@ -20,7 +23,8 @@ export const COLORS = {
         100: '#FFFFFF',
         200: '#F2F2F2',
         300: '#FAFAFA',
-        400: '#F3F3F3'
+        400: '#F3F3F3',
+        500: '#FFF5F1'
     },
 
     // black
@@ -35,7 +39,8 @@ export const COLORS = {
         300: '#c6282836',
         500: '#FF0000',
         600: '#C62828',
-        700: '#E55656'
+        700: '#E55656',
+        800: '#E34F57'
     },
 
     // Red
@@ -47,6 +52,7 @@ export const COLORS = {
     gray: {
         100: '#7C7C7C',
         200: '#C4C4C4',
+        300: '#73574D',
     }
 }
 
