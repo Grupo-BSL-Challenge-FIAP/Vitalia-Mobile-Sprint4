@@ -19,6 +19,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./src/api/queryClient";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { ImageProvider } from "./src/contexts/ImageContext";
+import { ActivePetProvider } from "./src/contexts/ActivePetContext";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -41,9 +42,11 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <ImageProvider>
         <AuthProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
+          <ActivePetProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </ActivePetProvider>
         </AuthProvider>
       </ImageProvider>
     </QueryClientProvider>
