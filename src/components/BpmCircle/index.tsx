@@ -1,13 +1,26 @@
 import { Text, View } from "react-native";
 import { COLORS, FONTS } from "../../styles/styles";
+import { BpmCircleType } from "../../types/BpmCircleType";
 
-export default function BpmCircle() {
+export default function BpmCircle({ bpm, status }: BpmCircleType) {
+  const getStatusColor = () => {
+    if (status === "RISK") {
+      return COLORS.red[500];
+    }
+
+    if (status === "ATTENTION") {
+      return "#F2C94C";
+    }
+
+    return COLORS.green[100];
+  };
+
   return (
     <View
       style={{
         width: 60,
         height: 60,
-        borderColor: COLORS.green[100],
+        borderColor: getStatusColor(),
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 3,
@@ -21,7 +34,7 @@ export default function BpmCircle() {
           color: COLORS.orange[700],
         }}
       >
-        140
+        {bpm ?? '--'}
       </Text>
       <Text
         style={{
