@@ -7,6 +7,7 @@ export const COLORS = {
     orange: {
         100: '#FAEBE7',
         200: '#F2C3B1',
+        210: '#E3C9BD',
         300: '#FAA182',
         500: '#D85B2F',
         700: '#983C1B',
@@ -22,7 +23,8 @@ export const COLORS = {
         100: '#FFFFFF',
         200: '#F2F2F2',
         300: '#FAFAFA',
-        400: '#F3F3F3'
+        400: '#F3F3F3',
+        500: '#FFF5F1'
     },
 
     // black
@@ -50,6 +52,7 @@ export const COLORS = {
     gray: {
         100: '#7C7C7C',
         200: '#C4C4C4',
+        300: '#73574D',
     }
 }
 
