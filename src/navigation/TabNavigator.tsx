@@ -4,16 +4,16 @@ import { RootStackParamList } from "./AppNavigator";
 import { COLORS, FONTS } from "../styles/styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
-import PageUnderDevelopmentScreen from "../screens/PageUnderDevelopmentScreen";
-import AllPetsScreen from "../screens/AllPetsScreen";
-import AccountUserScreen from "../screens/AccountUserScreen";
 import NotificationsScreen from "../screens/NotificationsScreen";
+import ProfileStackNavigator from "./ProfileStackNavigator";
+import PetsStackNavigator from "./PetsStackNavigator";
 
-const Tab = createBottomTabNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootStackParamList, "MainTabs">();
 
 export default function TabNavigator() {
   return (
     <Tab.Navigator
+      id="MainTabs"
       screenOptions={{
         headerShown: false,
 
@@ -74,7 +74,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Pets"
-        component={AllPetsScreen}
+        component={PetsStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -134,7 +134,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Perfil"
-        component={AccountUserScreen}
+        component={ProfileStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
