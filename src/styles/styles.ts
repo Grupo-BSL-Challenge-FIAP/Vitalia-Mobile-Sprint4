@@ -44,6 +44,12 @@ export const COLORS = {
         800: '#E34F57'
     },
 
+    // Blue
+    blue: {
+        100: '#1565C010',
+        900: '#1565C0',
+    },
+
     // Red
     green: {
         100: '#2CB44E'
