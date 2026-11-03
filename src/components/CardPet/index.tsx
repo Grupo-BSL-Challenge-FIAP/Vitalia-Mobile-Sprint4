@@ -14,6 +14,7 @@ export default function CardPet({
   marginBottom,
   flexDirection,
   gap,
+  boxShadow,
   children
 }: CardPetType) {
   return (
@@ -30,7 +31,7 @@ export default function CardPet({
         marginBottom: marginBottom,
         flexDirection: flexDirection || "row",
         gap: gap || 20,
-        boxShadow: '2px 7px 8px 2px rgba(0, 0, 0, 0.25)',
+        boxShadow: boxShadow || '2px 7px 8px 2px rgba(0, 0, 0, 0.25)',
       }}
     >
       {children}

@@ -10,5 +10,6 @@ export interface CardPetType {
   marginBottom?: number;
   flexDirection?: "row" | "column";
   gap?: number;
+  boxShadow?: string;
   children: React.ReactNode;
 }

@@ -5,7 +5,15 @@ import Cardinsight from "../CardInsight";
 import TextLink from "../TextLink";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-export default function ContainerInsights() {
+interface ContainerInsightsProps {
+  insights?: string[];
+  isLoading?: boolean;
+}
+
+export default function ContainerInsights({
+  insights = [],
+  isLoading = false,
+}: ContainerInsightsProps) {
   return (
     <View>
       <TitleOrange
@@ -20,15 +28,28 @@ export default function ContainerInsights() {
           gap: 30,
         }}
       >
-        <Cardinsight text="Seu pet fica mais ansioso quando você fica longe dele." />
-        <Cardinsight text="Seu pet não está tão ativo comparado a ontem, aconteceu algo?" />
+        {isLoading && (
+          <Cardinsight text="Carregando insights..." />
+        )}
+
+        {!isLoading && insights.length === 0 && (
+          <Cardinsight text="Nenhum insight disponível para este pet." />
+        )}
+
+        {!isLoading &&
+          insights.map((insight, index) => (
+            <Cardinsight
+              key={`${insight}-${index}`}
+              text={insight}
+            />
+          ))}
       </View>
 
       <View
         style={{
-            alignItems:"center",
-            marginTop: 57,
-            paddingBottom: 50
+          alignItems:"center",
+          marginTop: 57,
+          paddingBottom: 50
         }}
       >
         <TextLink
