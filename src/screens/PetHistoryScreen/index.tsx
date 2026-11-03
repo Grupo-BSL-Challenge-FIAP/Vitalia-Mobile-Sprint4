@@ -9,6 +9,9 @@ import SubTitleOrange from "../../components/SubTitleOrange";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { PetsStackParamList } from "../../navigation/PetsStackNavigator";
 import { useMyPets } from "../../hooks/useMyPets";
+import CardNumber from "../../components/CardNumber";
+import { usePetAppointments } from "../../hooks/usePetAppointments";
+import { useMeasurementHistory } from "../../hooks/useMeasurementHistory";
 
 type PetHistoryRouteProp = RouteProp<PetsStackParamList, "PetHistoryScreen">;
 
@@ -17,7 +20,14 @@ export default function PetHistoryScreen() {
   const { petId } = route.params;
   const { getPetImage } = useImages();
   const { data: pets = [], isLoading, isError } = useMyPets();
+  const { data: appointments = [], isLoading: isLoadingAppointments } = usePetAppointments(petId);
   const pet = pets.find((pet) => pet.id === petId);
+  const { data: measurements = [], isLoading: isLoadingMeasurements} = useMeasurementHistory(petId);
+
+  const appointmentsCount = isLoadingAppointments
+    ? "..."
+    : String(appointments.length);
+
   const getPetAgeLabel = (birthDate?: string) => {
     if (!birthDate) {
       return "";
@@ -129,6 +139,23 @@ export default function PetHistoryScreen() {
             </View>
           </CardPet>
         )}
+
+        <View
+            style={{
+                flexDirection: 'row',
+                gap: 20
+            }}
+        >
+            <CardNumber
+                title={appointmentsCount}
+                subTitle="Consultas"
+            />
+
+            <CardNumber
+                title={isLoadingMeasurements ? "..." : String(measurements.length)}
+                subTitle="Registros de saúde"
+            />
+        </View>
       </View>
     </LayoutWrapper>
   );
