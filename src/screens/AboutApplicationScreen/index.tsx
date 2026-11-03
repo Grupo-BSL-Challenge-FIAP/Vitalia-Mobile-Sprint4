@@ -1,10 +1,10 @@
-import { Text } from "react-native";
 import LayoutWrapper from "../../components/LayoutWrapper";
+import Header from "../../components/Header";
 
 export default function AboutApplicationScreen() {
     return(
-        <LayoutWrapper>
-            <Text>Sobre o APP</Text>
+        <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
+            <Header textHeader="Sobre o app"/>
         </LayoutWrapper>
     )
 }
