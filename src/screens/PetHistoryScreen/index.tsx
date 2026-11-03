@@ -12,6 +12,7 @@ import { useMyPets } from "../../hooks/useMyPets";
 import CardNumber from "../../components/CardNumber";
 import { usePetAppointments } from "../../hooks/usePetAppointments";
 import { useMeasurementHistory } from "../../hooks/useMeasurementHistory";
+import ContainerPetHistory from "../../components/ContainerPetHistory";
 
 type PetHistoryRouteProp = RouteProp<PetsStackParamList, "PetHistoryScreen">;
 
@@ -156,6 +157,8 @@ export default function PetHistoryScreen() {
                 subTitle="Registros de saúde"
             />
         </View>
+
+        <ContainerPetHistory petId={petId} />
       </View>
     </LayoutWrapper>
   );
