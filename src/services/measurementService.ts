@@ -20,4 +20,12 @@ export const measurementService = {
 
     return response.data;
   },
+
+  getHistoryByPetId: async (petId: number): Promise<MeasurementDetailResponse[]> => {
+  const response = await api.get<MeasurementDetailResponse[]>(
+    `/api/measurements/pet/${petId}`,
+  );
+
+  return response.data;
+},
 };
