@@ -82,7 +82,7 @@ export default function PetsDetailScreen() {
               }}
             >
               <CardActionPet
-                onPress={() => console.log("Histórico:", pet.id)}
+                onPress={() => navigation.navigate('PetHistoryScreen', {petId: petId})}
                 text="Histórico"
                 icon={<Feather name="file-text" size={40} color="black" />}
               />
