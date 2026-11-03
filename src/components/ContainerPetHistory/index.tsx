@@ -256,7 +256,7 @@ export default function ContainerPetHistory({ petId}: ContainerPetHistoryProps) 
                       backgroundColor: item.type === "Consultas" ? COLORS.blue[100] : COLORS.orange[100],
                       paddingVertical: 5,
                       paddingHorizontal: 10,
-                      width: item.type === "Consultas" ? 80 : 60,
+                      width: item.type === "Consultas" ? 80 : 70,
                       borderRadius: 100,
                       marginTop: 10,
                     }}
@@ -265,6 +265,7 @@ export default function ContainerPetHistory({ petId}: ContainerPetHistoryProps) 
                       style={{
                         color: item.type === "Consultas" ? COLORS.blue[900] : COLORS.orange[700],
                         fontFamily: FONTS.inter[500],
+                        textAlign: 'center',
                       }}
                     >
                       {item.type === "Consultas" ? "Consulta" : "Saúde"}
