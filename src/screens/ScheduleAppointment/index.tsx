@@ -17,6 +17,12 @@ import { useImages } from "../../contexts/ImageContext";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useVeterinarians } from "../../hooks/useVeterinarians";
+import { Alert } from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useCreateAppointment } from "../../hooks/useCreateAppointment";
+import type { ConsultationStackParamList } from "../../navigation/ConsultationStackNavigator";
+
+const APPOINTMENT_LOCATION = "Clínica Vitalia - Bela Vista";
 
 export default function ScheduleAppointment() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -36,6 +42,58 @@ export default function ScheduleAppointment() {
     isLoading: isLoadingVeterinarians,
     isError: isVeterinariansError,
   } = useVeterinarians();
+
+  const navigation = useNavigation<NavigationProp<ConsultationStackParamList>>();
+
+  const handleCreateAppointment = async () => {
+    if (!selectedPet) {
+      Alert.alert("Atenção", "Selecione um pet.");
+      return;
+    }
+
+    if (
+      !consultationType ||
+      !selectedDate ||
+      !selectedTime ||
+      selectedVeterinarianId === null
+    ) {
+      Alert.alert("Atenção", "Preencha todos os campos do agendamento.");
+      return;
+    }
+
+    const [hours, minutes] = selectedTime.split("h").map(Number);
+
+    const appointmentDate = new Date(selectedDate);
+    appointmentDate.setHours(hours, minutes, 0, 0);
+
+    const formattedAppointmentDate =
+      `${appointmentDate.getFullYear()}-${String(appointmentDate.getMonth() + 1).padStart(2, "0")}-${String(appointmentDate.getDate()).padStart(2, "0")}` +
+      `T${String(appointmentDate.getHours()).padStart(2, "0")}:${String(appointmentDate.getMinutes()).padStart(2, "0")}:00`;
+
+    try {
+      const createdAppointment = await createAppointment.mutateAsync({
+        appointmentDate: formattedAppointmentDate,
+        status: "SCHEDULED",
+        appointmentType: consultationType,
+        location: APPOINTMENT_LOCATION,
+        petId: selectedPet.id,
+        veterinarianId: selectedVeterinarianId,
+      });
+
+      navigation.navigate("ConsultatiionsDetailsScreen", {
+        appointmentId: createdAppointment.id,
+        petId: createdAppointment.petId,
+        status: "Pendente",
+      });
+    } catch {
+      Alert.alert(
+        "Erro",
+        "Não foi possível realizar o agendamento. Tente novamente.",
+      );
+    }
+  };
+
+  const createAppointment = useCreateAppointment();
 
   return (
     <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -404,6 +462,36 @@ export default function ScheduleAppointment() {
                   );
                 })}
               </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                marginVertical: 40,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={handleCreateAppointment}
+                disabled={createAppointment.isPending}
+                style={{
+                  paddingHorizontal: 30,
+                  paddingVertical: 10,
+                  backgroundColor: COLORS.orange[900],
+                  borderRadius: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    color: COLORS.white[100],
+                    fontFamily: FONTS.inter[700],
+                    fontSize: 15,
+                  }}
+                >
+                  {createAppointment.isPending ? "Agendando..." : "Confirmar agendamento"}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
