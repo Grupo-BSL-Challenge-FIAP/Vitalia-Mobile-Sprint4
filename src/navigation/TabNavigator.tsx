@@ -1,12 +1,12 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DashboardResponsibleScreen from "../screens/DashboardResponsibleScreen";
 import { RootStackParamList } from "./AppNavigator";
 import { COLORS, FONTS } from "../styles/styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 import NotificationsScreen from "../screens/NotificationsScreen";
 import ProfileStackNavigator from "./ProfileStackNavigator";
-import PetsStackNavigator from "./PetsStackNavigator";
+import ConsultationsScreen from "../screens/ConsultationsScreen";
+import HomeStackNavigator from "./HomeStackNavigator";
 
 const Tab = createBottomTabNavigator<RootStackParamList, "MainTabs">();
 
@@ -44,7 +44,7 @@ export default function TabNavigator() {
     >
       <Tab.Screen
         name="Início"
-        component={DashboardResponsibleScreen}
+        component={HomeStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -73,8 +73,8 @@ export default function TabNavigator() {
       />
 
       <Tab.Screen
-        name="Pets"
-        component={PetsStackNavigator}
+        name="Consultas"
+        component={ConsultationsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -93,7 +93,7 @@ export default function TabNavigator() {
               }}
             >
               <Ionicons
-                name={focused ? "paw" : "paw-outline"}
+                name={focused ? "calendar" : "calendar-outline"}
                 size={26}
                 color="white"
               />
