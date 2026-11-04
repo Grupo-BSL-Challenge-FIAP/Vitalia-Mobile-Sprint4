@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Header from "../../components/Header";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import SubTitleOrange from "../../components/SubTitleOrange";
@@ -7,12 +14,18 @@ import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../../components/TitleOrange";
 import { useMyPets } from "../../hooks/useMyPets";
 import { useImages } from "../../contexts/ImageContext";
+import { Picker } from "@react-native-picker/picker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default function ScheduleAppointment() {
   const { data: pets = [], isLoading, isError } = useMyPets();
   const { getPetImage } = useImages();
   const [selectedPetId, setSelectedPetId] = useState<number | null>(null);
-  const selectedPet = pets.find((pet) => pet.id === selectedPetId) ?? pets[0] ?? null;
+  const selectedPet =
+    pets.find((pet) => pet.id === selectedPetId) ?? pets[0] ?? null;
+  const [consultationType, setConsultationType] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
   return (
     <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -99,10 +112,14 @@ export default function ScheduleAppointment() {
                     accessibilityState={{ selected: isSelected }}
                     style={{
                       padding: 15,
-                      backgroundColor: isSelected ? COLORS.orange[960] : COLORS.orange[920],
+                      backgroundColor: isSelected
+                        ? COLORS.orange[960]
+                        : COLORS.orange[920],
                       borderWidth: 0.5,
                       borderRadius: 10,
-                      borderColor: isSelected ? COLORS.orange[710] : COLORS.orange[930],
+                      borderColor: isSelected
+                        ? COLORS.orange[710]
+                        : COLORS.orange[930],
                       alignItems: "center",
                       gap: 10,
                     }}
@@ -134,7 +151,9 @@ export default function ScheduleAppointment() {
                       title={pet.name}
                       fontSize={15}
                       fontFamily={FONTS.inter[500]}
-                      color={isSelected ? COLORS.white[100] : COLORS.orange[900]}
+                      color={
+                        isSelected ? COLORS.white[100] : COLORS.orange[900]
+                      }
                     />
                   </Pressable>
 
@@ -152,7 +171,101 @@ export default function ScheduleAppointment() {
             })}
           </View>
         )}
+        <View
+          style={{
+            marginTop: 30,
+          }}
+        >
+          <View>
+            <TitleOrange
+              title="Tipo de consulta"
+              fontSize={15}
+              fontFamily={FONTS.inter[500]}
+              color={COLORS.orange[710]}
+            />
+
+            <View
+              style={{
+                width: 262,
+                marginTop: 10,
+                borderWidth: 1,
+                borderRadius: 10,
+                borderColor: COLORS.orange[710],
+                overflow: "hidden",
+              }}
+            >
+              <Picker
+                selectedValue={consultationType}
+                onValueChange={(itemValue) =>
+                  setConsultationType(String(itemValue))
+                }
+                style={{
+                  color: COLORS.orange[780],
+                  height: 55,
+                  fontFamily: FONTS.inter[700],
+                }}
+              >
+                <Picker.Item label="Selecionar" value="" />
+                <Picker.Item label="Rotina" value="rotina" />
+                <Picker.Item label="Vacina" value="vacina" />
+                <Picker.Item label="Retorno" value="retorno" />
+              </Picker>
+            </View>
+
+            <View
+              style={{
+                marginTop: 30,
+                gap: 10,
+              }}
+            >
+              <TitleOrange
+                title="Data desejada (sujeito a disponibilidade)"
+                fontSize={15}
+                fontFamily={FONTS.inter[500]}
+                color={COLORS.orange[710]}
+              />
+
+              <TouchableOpacity
+                onPress={() => setIsDatePickerVisible(true)}
+                style={{
+                  width: 150,
+                  paddingVertical: 8,
+                  paddingHorizontal: 25,
+                  backgroundColor: COLORS.orange[900],
+                  borderRadius: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    color: COLORS.white[100],
+                    textAlign: "center",
+                    fontSize: 15,
+                    fontFamily: FONTS.inter[500],
+                  }}
+                >
+                  {selectedDate
+                    ? selectedDate.toLocaleDateString("pt-BR")
+                    : "Selecionar"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </View>
+
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        date={selectedDate ?? new Date()}
+        minimumDate={new Date()}
+        confirmTextIOS="Confirmar"
+        cancelTextIOS="Cancelar"
+        onConfirm={(date) => {
+          setSelectedDate(date);
+          setIsDatePickerVisible(false);
+        }}
+        onCancel={() => setIsDatePickerVisible(false)}
+      />
     </LayoutWrapper>
   );
 }
