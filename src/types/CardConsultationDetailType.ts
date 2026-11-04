@@ -1,14 +1,15 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import type { ViewStyle } from "react-native";
 
 export interface CardConsultationDetailType {
-  title?: string;  
-  flexDirection?: string;  
+  title?: string;
+  flexDirection?: ViewStyle["flexDirection"];
   paddingTop?: number;
   paddingBottom?: number;
   paddingLeft?: number;
   paddingVertical?: number;
   paddingHorizontal?: number;
   gap?: number;
-  alignItems?: string;
+  alignItems?: ViewStyle["alignItems"];
   children: ReactNode;
 }
