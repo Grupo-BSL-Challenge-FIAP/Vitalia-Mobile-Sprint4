@@ -2,27 +2,45 @@ import { Image, ImageSourcePropType, Text, TouchableOpacity, View } from "react-
 import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../TitleOrange";
 import SubTitleOrange from "../SubTitleOrange";
-
-type AppointmentStatus = "SCHEDULED" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  AppointmentStatus,
+  AppointmentStatusLabel,
+  ConsultationStackParamList,
+} from "../../navigation/ConsultationStackNavigator";
 
 interface CardPetConsultationsProps {
+  appointmentId: number;
+  petId: number;
   petName: string;
   petImage: ImageSourcePropType;
   title: string;
   veterinarianName: string;
   appointmentDate: string;
-  status: AppointmentStatus | string;
+  status: AppointmentStatus;
+  disableNavigation?: boolean;
 }
+
 export default function CardPetConsultations({
+  appointmentId,
+  petId,
   petName,
   petImage,
   title,
   veterinarianName,
   appointmentDate,
   status,
+  disableNavigation = false,
 }: CardPetConsultationsProps) {
 
-  const getStatusStyle = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<ConsultationStackParamList>>();
+
+  const getStatusStyle = (): {
+    label: AppointmentStatusLabel;
+    backgroundColor: string;
+    color: string;
+  } => {
     switch (status) {
       case "CONFIRMED":
         return {
@@ -87,16 +105,28 @@ export default function CardPetConsultations({
 
   return(
       <TouchableOpacity
-          style={{
-              flexDirection: 'row',
-              paddingVertical: 15,
-              paddingHorizontal: 20,
-              backgroundColor: COLORS.orange[910],
-              borderRadius: 10,
-              borderColor: COLORS.orange[930],
-              borderWidth: 1,
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
-          }}
+        disabled={disableNavigation}
+        onPress={() => {
+          if (disableNavigation) {
+            return;
+          }
+
+          navigation.navigate("ConsultatiionsDetailsScreen", {
+            appointmentId: appointmentId,
+            petId: petId,
+            status: statusStyle.label,
+          });
+        }}
+        style={{
+            flexDirection: 'row',
+            paddingVertical: 15,
+            paddingHorizontal: 20,
+            backgroundColor: COLORS.orange[910],
+            borderRadius: 10,
+            borderColor: COLORS.orange[930],
+            borderWidth: 1,
+            boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
+        }}
       >
           <View>
               <Image 
