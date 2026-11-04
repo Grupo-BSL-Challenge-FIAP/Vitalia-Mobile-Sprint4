@@ -217,6 +217,8 @@ export default function ConsultationWithAppointment() {
                   return (
                     <CardPetConsultations
                         key={appointment.id}
+                        appointmentId={appointment.id}
+                        petId={appointment.petId}
                         petName={pet.name}
                         petImage={getPetImage(
                             getSpeciesIdFromPet(pet),
