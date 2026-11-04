@@ -1,10 +1,11 @@
 import { Text, View } from "react-native";
 import { COLORS, FONTS } from "../../styles/styles";
 import Feather from "@expo/vector-icons/Feather";
+interface CardHashCommitProps {
+    commitHash: string;
+}
 
-export default function CardHashCommit() {
-  const commitHash = "b9c673fdc5c7c1706b5c10a1fa0bfc11d946dcd6";
-
+export default function CardHashCommit({ commitHash }: CardHashCommitProps) {
   return (
     <View
       style={{
