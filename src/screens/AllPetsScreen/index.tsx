@@ -24,7 +24,6 @@ export default function AllPetsScreen() {
     >
       <Header
         textHeader="Pets"
-        isBackBottom={false}
       />
 
       <View
