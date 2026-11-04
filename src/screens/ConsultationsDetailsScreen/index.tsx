@@ -8,6 +8,8 @@ import { useAppointmentById } from "../../hooks/useAppointmentById";
 import { useMyPets } from "../../hooks/useMyPets";
 import { useImages } from "../../contexts/ImageContext";
 import { COLORS, FONTS } from "../../styles/styles";
+import CardConsultationInformationDetails from "../../components/CardConsultationInformationDetails";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ConsultatiionsDetailsScreen() {
 
@@ -42,13 +44,8 @@ export default function ConsultatiionsDetailsScreen() {
     return null;
   };
 
-  const isLoading =
-    isLoadingAppointment ||
-    isLoadingPets;
-
-  const isError =
-    isErrorAppointment ||
-    isErrorPets;
+  const isLoading = isLoadingAppointment || isLoadingPets;
+  const isError = isErrorAppointment || isErrorPets;
 
   return(
       <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -58,6 +55,7 @@ export default function ConsultatiionsDetailsScreen() {
             style={{
               paddingHorizontal: 20,
               marginTop: 20,
+              gap: 20,
             }}
           >
             {isLoading && (
@@ -79,6 +77,7 @@ export default function ConsultatiionsDetailsScreen() {
             )}
 
             {!isLoading && !isError && appointment && pet && (
+              <>
               <CardPetConsultations
                 appointmentId={appointment.id}
                 petId={appointment.petId}
@@ -95,6 +94,25 @@ export default function ConsultatiionsDetailsScreen() {
                 status={appointment.status}
                 disableNavigation={true}
               />
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <CardConsultationInformationDetails 
+                  icon={<MaterialIcons name="event" size={29} color={COLORS.orange[900]} />}
+                  title="15 de novembro"
+                  subTitle="Data"
+                />
+                <CardConsultationInformationDetails 
+                  icon={<MaterialIcons name="event" size={29} color={COLORS.orange[900]} />}
+                  title="10h30"
+                  subTitle="Hora"
+                />
+              </View>
+              </>
             )}
           </View>
       </LayoutWrapper>
