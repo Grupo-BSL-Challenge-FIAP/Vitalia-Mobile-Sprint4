@@ -53,7 +53,7 @@ export default function ContainerInsights({
         }}
       >
         <TextLink
-          route="NotificationsScreen"
+          route="Notificações"
           textLink="Ver histórico de insights"
           fontFamily={FONTS.inter[700]}
           fontSize={20}
