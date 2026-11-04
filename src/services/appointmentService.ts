@@ -12,6 +12,16 @@ export interface AppointmentResponse {
   veterinarianName: string;
 }
 
+export interface AppointmentUpdateRequest {
+  appointmentDate: string;
+  status: AppointmentResponse["status"];
+  notes: string;
+  appointmentType: string | null;
+  location: string | null;
+  petId: number;
+  veterinarianId: number;
+}
+
 export const appointmentService = {
   getByPetId: async (petId: number): Promise<AppointmentResponse[]> => {
     const response = await api.get<AppointmentResponse[]>(
@@ -28,6 +38,26 @@ export const appointmentService = {
 
     return response.data;
   },
+
+  update: async (
+    appointmentId: number,
+    request: AppointmentUpdateRequest,
+  ): Promise<AppointmentResponse> => {
+    const response = await api.put<AppointmentResponse>(
+      `/appointments/${appointmentId}`,
+      request,
+    );
+
+    return response.data;
+  },
+
+  confirmById: async (appointmentId: number): Promise<AppointmentResponse> => {
+  const response = await api.patch<AppointmentResponse>(
+    `/appointments/${appointmentId}/confirm`,
+  );
+
+  return response.data;
+},
 
   deleteById: async (appointmentId: number): Promise<void> => {
     await api.delete(`/appointments/${appointmentId}`);
