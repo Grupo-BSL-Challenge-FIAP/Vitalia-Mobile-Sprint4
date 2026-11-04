@@ -219,7 +219,7 @@ export default function ConsultatiionsDetailsScreen() {
         style={{
           paddingHorizontal: 20,
           marginTop: 20,
-          marginBottom: 140,
+          marginBottom: 80,
           gap: 20,
         }}
       >
@@ -379,6 +379,7 @@ export default function ConsultatiionsDetailsScreen() {
               <TouchableOpacity
                 onPress={() => setIsDeleteAppointmentModalVisible(true)}
                 style={{
+                  flex: appointment.status !== "SCHEDULED" ? 1 : undefined,
                   paddingVertical: 10.5,
                   paddingHorizontal: 12.5,
                   borderColor: COLORS.red[800],
