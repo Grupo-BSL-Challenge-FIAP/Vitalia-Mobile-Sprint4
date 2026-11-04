@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/navigation/AppNavigator";
+import * as Notifications from "expo-notifications";
 
 import {
   useFonts,
@@ -20,6 +21,15 @@ import { queryClient } from "./src/api/queryClient";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { ImageProvider } from "./src/contexts/ImageContext";
 import { ActivePetProvider } from "./src/contexts/ActivePetContext";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts({

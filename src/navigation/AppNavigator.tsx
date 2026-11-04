@@ -36,6 +36,7 @@ export type RootStackParamList = {
   PetDetailScreen: { petId: number; };
   AboutApplicationScreen: undefined;
   PetHistoryScreen: { petId: number; };
+  Consultas: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList, "RootStack">();

@@ -9,10 +9,15 @@ import ContainerStatus from "../ContainerStatus";
 import ButtonLink from "../ButtonLink";
 import { useActivePet } from "../../contexts/ActivePetContext";
 import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigation/AppNavigator";
+import { useNavigation } from "@react-navigation/native"
 
 export default function StatusPet() {
   const { activePetId } = useActivePet();
   const { data: measurement, isLoading } = useLatestMeasurement(activePetId);
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const getSleepQuality = (sleepHours?: number) => {
     if (sleepHours === undefined) return "--";
@@ -120,7 +125,15 @@ export default function StatusPet() {
         </CardStatus>
         <View style={{ width: "100%" }}>
           <ButtonLink
-            route="PetsScreen"
+            onPress={() => {
+              if (!activePetId) {
+                return;
+              }
+
+              navigation.navigate("PetDetailScreen", {
+                petId: activePetId
+              });
+            }}
             fontSize={15}
             backgroundColor={COLORS.orange[700]}
             borderWidth={2}
