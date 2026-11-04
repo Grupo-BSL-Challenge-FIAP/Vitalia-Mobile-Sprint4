@@ -3,7 +3,6 @@ import TitleOrange from "../TitleOrange";
 import { COLORS, FONTS } from "../../styles/styles";
 import ContainerTitleSubTitle from "../ContainerTitleSubTitle";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import CardStatus from "../CardStatus";
 import ContainerStatus from "../ContainerStatus";
 import ButtonLink from "../ButtonLink";
@@ -30,6 +29,8 @@ export default function StatusPet() {
 
   const sleepQuality = isLoading ? "..." : getSleepQuality(measurement?.sleepHours);
   const heartRate = isLoading ? "..." : measurement ? `${Math.round(measurement.heartRate)} Bpm` : "--";
+  const activityLevel = isLoading ? "..." : measurement ? `${Math.round(measurement.activityLevel)}%` : "--";
+  const temperature = isLoading ? "..." : measurement ? `${measurement.temperature.toFixed(1)} °C` : "--";
 
   return (
     <View
@@ -85,42 +86,48 @@ export default function StatusPet() {
             />
           </View>
         </CardStatus>
-        <CardStatus paddingRight={10} paddingBottom={30} isIconRoute={true}>
-          <View>
-            <TitleOrange
-              title="Ver localização do pet"
-              fontSize={13}
-              color={COLORS.orange[700]}
-              fontFamily={FONTS.inter[700]}
-              textAlign="center"
-            />
-          </View>
+        <CardStatus paddingRight={10} paddingBottom={30}>
           <View
             style={{
-              alignItems: "center",
-              marginTop: 20,
+              alignItems: "flex-end",
             }}
           >
-            <Image source={require("../../assets/iconMap.png")} />
+            <FontAwesome6 name="paw" size={50} color="black" />
+          </View>
+          <View>
+            <ContainerTitleSubTitle
+              alignItems="flex-start"
+              textTitle={activityLevel}
+              fontFamilyTitle={FONTS.inter[700]}
+              fontSizeTiTleOrange={24}
+              colorTitleOrange={COLORS.orange[700]}
+              textSubTitle="Nível de atividade"
+              fontSizeSubTitle={14}
+              fontFamilySubTitle={FONTS.inter[500]}
+              gap={20}
+            />
           </View>
         </CardStatus>
-        <CardStatus paddingRight={10} paddingBottom={30} isIconRoute={true}>
-          <View>
-            <TitleOrange
-              title="Consultas para o pet"
-              fontSize={13}
-              color={COLORS.orange[700]}
-              fontFamily={FONTS.inter[700]}
-              textAlign="center"
-            />
-          </View>
+        <CardStatus paddingRight={10} paddingBottom={30}>
           <View
             style={{
-              alignItems: "center",
-              marginTop: 20,
+              alignItems: "flex-end",
             }}
           >
-            <FontAwesome name="calendar-check-o" size={50} color="black" />
+            <FontAwesome6 name="temperature-half" size={50} color="black" />
+          </View>
+          <View>
+            <ContainerTitleSubTitle
+              alignItems="flex-start"
+              textTitle={temperature}
+              fontFamilyTitle={FONTS.inter[700]}
+              fontSizeTiTleOrange={24}
+              colorTitleOrange={COLORS.orange[700]}
+              textSubTitle="Temperatura corporal"
+              fontSizeSubTitle={14}
+              fontFamilySubTitle={FONTS.inter[500]}
+              gap={20}
+            />
           </View>
         </CardStatus>
         <View style={{ width: "100%" }}>
