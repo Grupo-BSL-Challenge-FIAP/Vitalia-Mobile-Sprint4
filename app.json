@@ -6,7 +6,8 @@
     "plugins": [
       "expo-font",
       "expo-splash-screen",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-community/datetimepicker"
     ],
     "splash": {
       "image": "./src/assets/logo_splash_vitalia2.png",
