@@ -1,6 +1,5 @@
 import { Image, Text, TouchableOpacity, View, } from "react-native";
 import TitleOrange from "../TitleOrange";
-import TextLink from "../TextLink";
 import CardPet from "../CardPet";
 import { COLORS, FONTS } from "../../styles/styles";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -8,6 +7,9 @@ import { useEffect } from "react";
 import { useMyPets } from "../../hooks/useMyPets";
 import { useImages } from "../../contexts/ImageContext";
 import { useActivePet } from "../../contexts/ActivePetContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { HomeStackParamList } from "../../navigation/HomeStackNavigator";
 
 export default function YourPets() {
   const {
@@ -19,6 +21,7 @@ export default function YourPets() {
   const { getPetImage } = useImages();
   const { activePetId, setActivePet, isLoadingActivePet } = useActivePet();
   const activePet = pets.find((pet) => pet.id === activePetId) ?? pets[0];
+  const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
 
   const getPetAgeLabel = ( birthDate?: string,) => {
     if (!birthDate) {
@@ -99,18 +102,28 @@ export default function YourPets() {
           fontFamily={FONTS.inter[700]}
         />
 
-        <TextLink
-          route="TabsPet"
-          textLink="Ver todos"
-          fontFamily={FONTS.inter[500]}
-          iconRight={
-            <Entypo
-              name="chevron-small-right"
-              size={23}
-              color={COLORS.orange[900]}
-            />
-          }
-        />
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AllPetsScreen")}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: FONTS.inter[500],
+              color: COLORS.orange[900],
+            }}
+          >
+            Ver todos
+          </Text>
+
+          <Entypo
+            name="chevron-small-right"
+            size={23}
+            color={COLORS.orange[900]}
+          />
+        </TouchableOpacity>
       </View>
 
       {isLoading && (
