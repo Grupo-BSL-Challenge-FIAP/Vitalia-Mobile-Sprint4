@@ -7,6 +7,9 @@ export interface AppointmentResponse {
   notes: string | null;
   petId: number;
   veterinarianId: number;
+  appointmentType: string | null;
+  location: string | null;
+  veterinarianName: string;
 }
 
 export const appointmentService = {
