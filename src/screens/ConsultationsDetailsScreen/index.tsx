@@ -29,6 +29,7 @@ import { useState } from "react";
 import DeleteAppointmentModal from "../../components/DeleteAppointmentModal";
 import { useDeleteAppointment } from "../../hooks/useDeleteAppointment";
 import axios from "axios";
+import { useConfirmAppointment } from "../../hooks/useConfirmAppointment";
 
 function formatAppointmentDate(value: string) {
   const date = new Date(value);
@@ -85,6 +86,7 @@ export default function ConsultatiionsDetailsScreen() {
   } = useMyPets();
 
   const deleteAppointmentMutation = useDeleteAppointment();
+  const confirmAppointmentMutation = useConfirmAppointment();
 
   const { getPetImage } = useImages();
 
@@ -102,19 +104,18 @@ export default function ConsultatiionsDetailsScreen() {
     return null;
   };
 
-const handleDeleteAppointment = () => {
-  if (!appointment || deleteAppointmentMutation.isPending) {
+  const handleConfirmAppointment = () => {
+  if (
+    !appointment ||
+    confirmAppointmentMutation.isPending ||
+    appointment.status !== "SCHEDULED"
+  ) {
     return;
   }
 
-  deleteAppointmentMutation.mutate(appointment.id, {
-    onSuccess: () => {
-      setIsDeleteAppointmentModalVisible(false);
-      navigation.goBack();
-    },
-
+  confirmAppointmentMutation.mutate(appointment.id, {
     onError: (error: unknown) => {
-      console.error("Erro ao cancelar consulta:", error);
+      console.error("Erro ao confirmar consulta:", error);
 
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data as
@@ -133,28 +134,79 @@ const handleDeleteAppointment = () => {
               responseData?.detail ??
               responseData?.error;
 
-        console.log("Status HTTP:", error.response?.status);
-        console.log("Resposta da API:", error.response?.data);
-
         Alert.alert(
-          `Erro ao cancelar consulta (${error.response?.status ?? "sem resposta"})`,
+          `Erro ao confirmar consulta (${error.response?.status ?? "sem resposta"})`,
           backendMessage ||
             error.message ||
-            "Não foi possível cancelar a consulta. Tente novamente.",
+            "Não foi possível confirmar a consulta. Tente novamente.",
         );
 
         return;
       }
 
       Alert.alert(
-        "Erro ao cancelar consulta",
+        "Erro ao confirmar consulta",
         error instanceof Error
           ? error.message
           : "Ocorreu um erro inesperado.",
       );
     },
   });
-};
+  };
+
+  const handleDeleteAppointment = () => {
+    if (!appointment || deleteAppointmentMutation.isPending) {
+      return;
+    }
+
+    deleteAppointmentMutation.mutate(appointment.id, {
+      onSuccess: () => {
+        setIsDeleteAppointmentModalVisible(false);
+        navigation.goBack();
+      },
+
+      onError: (error: unknown) => {
+        console.error("Erro ao cancelar consulta:", error);
+
+        if (axios.isAxiosError(error)) {
+          const responseData = error.response?.data as
+            | {
+                message?: string;
+                error?: string;
+                detail?: string;
+              }
+            | string
+            | undefined;
+
+          const backendMessage =
+            typeof responseData === "string"
+              ? responseData
+              : responseData?.message ??
+                responseData?.detail ??
+                responseData?.error;
+
+          console.log("Status HTTP:", error.response?.status);
+          console.log("Resposta da API:", error.response?.data);
+
+          Alert.alert(
+            `Erro ao cancelar consulta (${error.response?.status ?? "sem resposta"})`,
+            backendMessage ||
+              error.message ||
+              "Não foi possível cancelar a consulta. Tente novamente.",
+          );
+
+          return;
+        }
+
+        Alert.alert(
+          "Erro ao cancelar consulta",
+          error instanceof Error
+            ? error.message
+            : "Ocorreu um erro inesperado.",
+        );
+      },
+    });
+  };
 
   const isLoading = isLoadingAppointment || isLoadingPets;
   const isError = isErrorAppointment || isErrorPets;
@@ -347,7 +399,10 @@ const handleDeleteAppointment = () => {
                 </Text>
               </TouchableOpacity>
 
+            {appointment.status === "SCHEDULED" && (
               <TouchableOpacity
+                onPress={handleConfirmAppointment}
+                disabled={confirmAppointmentMutation.isPending}
                 style={{
                   paddingVertical: 10.5,
                   paddingHorizontal: 12.5,
@@ -355,6 +410,7 @@ const handleDeleteAppointment = () => {
                   borderWidth: 1,
                   borderRadius: 10,
                   backgroundColor: COLORS.green[220],
+                  opacity: confirmAppointmentMutation.isPending ? 0.6 : 1,
                 }}
               >
                 <Text
@@ -365,9 +421,12 @@ const handleDeleteAppointment = () => {
                     textAlign: "center",
                   }}
                 >
-                  Confirmar consulta
+                  {confirmAppointmentMutation.isPending
+                    ? "Confirmando..."
+                    : "Confirmar consulta"}
                 </Text>
               </TouchableOpacity>
+            )}
             </View>
           </>
         )}
