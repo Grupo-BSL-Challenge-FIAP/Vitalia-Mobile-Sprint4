@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import Header from "../../components/Header";
 import ConsultationWithOutAppointment from "../../components/ConsultationWithOutAppointment";
+import ConsultationWithAppointment from "../../components/ConsultationWithAppointment";
 
 export default function ConsultationsScreen() {
     return(
@@ -13,7 +14,7 @@ export default function ConsultationsScreen() {
                     margin: 20,
                 }}
             >
-                <ConsultationWithOutAppointment />
+                <ConsultationWithAppointment />
             </View>
         </LayoutWrapper>
     )
