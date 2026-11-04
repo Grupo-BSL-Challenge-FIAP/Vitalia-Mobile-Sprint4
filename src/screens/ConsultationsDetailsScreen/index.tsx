@@ -28,8 +28,12 @@ import { useAppointmentById } from "../../hooks/useAppointmentById";
 import { useState } from "react";
 import DeleteAppointmentModal from "../../components/DeleteAppointmentModal";
 import { useDeleteAppointment } from "../../hooks/useDeleteAppointment";
-import axios from "axios";
 import { useConfirmAppointment } from "../../hooks/useConfirmAppointment";
+import {
+  requestNotificationPermission,
+  sendAppointmentConfirmedNotification,
+} from "../../services/notificationService";
+import axios from "axios";
 
 function formatAppointmentDate(value: string) {
   const date = new Date(value);
@@ -105,53 +109,83 @@ export default function ConsultatiionsDetailsScreen() {
   };
 
   const handleConfirmAppointment = () => {
-  if (
-    !appointment ||
-    confirmAppointmentMutation.isPending ||
-    appointment.status !== "SCHEDULED"
-  ) {
-    return;
-  }
+    if (
+      !appointment ||
+      confirmAppointmentMutation.isPending ||
+      appointment.status !== "SCHEDULED"
+    ) {
+      return;
+    }
 
-  confirmAppointmentMutation.mutate(appointment.id, {
-    onError: (error: unknown) => {
-      console.error("Erro ao confirmar consulta:", error);
+    confirmAppointmentMutation.mutate(appointment.id, {
+      onSuccess: async () => {
+        try {
+          const hasPermission = await requestNotificationPermission();
 
-      if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data as
-          | {
-              message?: string;
-              error?: string;
-              detail?: string;
-            }
-          | string
-          | undefined;
+          if (!hasPermission) {
+            Alert.alert(
+              "Consulta confirmada",
+              "A consulta foi confirmada, mas as notificações não foram autorizadas. Você pode ativá-las nas configurações do dispositivo.",
+            );
 
-        const backendMessage =
-          typeof responseData === "string"
-            ? responseData
-            : responseData?.message ??
-              responseData?.detail ??
-              responseData?.error;
+            return;
+          }
+
+          await sendAppointmentConfirmedNotification(
+            pet?.name ?? "seu pet",
+            appointment.notes?.trim() || "Consulta veterinária",
+          );
+        } catch (notificationError) {
+          console.error(
+            "Erro ao enviar notificação da consulta:",
+            notificationError,
+          );
+
+          Alert.alert(
+            "Consulta confirmada",
+            "A consulta foi confirmada, mas não foi possível exibir a notificação.",
+          );
+        }
+      },
+
+      onError: (error: unknown) => {
+        console.error("Erro ao confirmar consulta:", error);
+
+        if (axios.isAxiosError(error)) {
+          const responseData = error.response?.data as
+            | {
+                message?: string;
+                error?: string;
+                detail?: string;
+              }
+            | string
+            | undefined;
+
+          const backendMessage =
+            typeof responseData === "string"
+              ? responseData
+              : responseData?.message ??
+                responseData?.detail ??
+                responseData?.error;
+
+          Alert.alert(
+            `Erro ao confirmar consulta (${error.response?.status ?? "sem resposta"})`,
+            backendMessage ||
+              error.message ||
+              "Não foi possível confirmar a consulta. Tente novamente.",
+          );
+
+          return;
+        }
 
         Alert.alert(
-          `Erro ao confirmar consulta (${error.response?.status ?? "sem resposta"})`,
-          backendMessage ||
-            error.message ||
-            "Não foi possível confirmar a consulta. Tente novamente.",
+          "Erro ao confirmar consulta",
+          error instanceof Error
+            ? error.message
+            : "Ocorreu um erro inesperado.",
         );
-
-        return;
-      }
-
-      Alert.alert(
-        "Erro ao confirmar consulta",
-        error instanceof Error
-          ? error.message
-          : "Ocorreu um erro inesperado.",
-      );
-    },
-  });
+      },
+    });
   };
 
   const handleDeleteAppointment = () => {
@@ -400,34 +434,34 @@ export default function ConsultatiionsDetailsScreen() {
                 </Text>
               </TouchableOpacity>
 
-            {appointment.status === "SCHEDULED" && (
-              <TouchableOpacity
-                onPress={handleConfirmAppointment}
-                disabled={confirmAppointmentMutation.isPending}
-                style={{
-                  paddingVertical: 10.5,
-                  paddingHorizontal: 12.5,
-                  borderColor: COLORS.green[200],
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  backgroundColor: COLORS.green[220],
-                  opacity: confirmAppointmentMutation.isPending ? 0.6 : 1,
-                }}
-              >
-                <Text
+              {appointment.status === "SCHEDULED" && (
+                <TouchableOpacity
+                  onPress={handleConfirmAppointment}
+                  disabled={confirmAppointmentMutation.isPending}
                   style={{
-                    fontSize: 15,
-                    fontFamily: FONTS.inter[700],
-                    color: COLORS.green[200],
-                    textAlign: "center",
+                    paddingVertical: 10.5,
+                    paddingHorizontal: 12.5,
+                    borderColor: COLORS.green[200],
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    backgroundColor: COLORS.green[220],
+                    opacity: confirmAppointmentMutation.isPending ? 0.6 : 1,
                   }}
                 >
-                  {confirmAppointmentMutation.isPending
-                    ? "Confirmando..."
-                    : "Confirmar consulta"}
-                </Text>
-              </TouchableOpacity>
-            )}
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontFamily: FONTS.inter[700],
+                      color: COLORS.green[200],
+                      textAlign: "center",
+                    }}
+                  >
+                    {confirmAppointmentMutation.isPending
+                      ? "Confirmando..."
+                      : "Confirmar consulta"}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </>
         )}
