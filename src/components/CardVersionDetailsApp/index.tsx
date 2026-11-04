@@ -5,8 +5,22 @@ import CardHashCommit from "../CardHashCommit";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import TextDetailVersionApp from "../TextDetailVersionApp";
 import Feather from '@expo/vector-icons/Feather';
+interface CardVersionDetailsAppProps {
+    version: string;
+    commitHash: string;
+    branch: string;
+    publishedAt: string;
+}
 
-export default function CardVersionDetailsApp() {
+export default function CardVersionDetailsApp({ version, commitHash, branch,publishedAt}: CardVersionDetailsAppProps) {
+
+    const formatPublishedAt = (date: string) => {
+        const datePart = date.split("T")[0];
+        const [year, month, day] = datePart.split("-");
+
+        return `${day}/${month}/${year}`;
+    };
+
     return (
         <View
             style={{
@@ -27,27 +41,29 @@ export default function CardVersionDetailsApp() {
                     gap: 15
                 }}
             >
-                <CardHashCommit />
+                <CardHashCommit commitHash={commitHash} />
 
                 <View
                     style={{
                         gap: 15
                     }}
                 >
-                    <TextDetailVersionApp 
-                        icon={<MaterialIcons name="phone-iphone" size={24} color={COLORS.orange[900]} />} 
-                        title="Versão" 
-                        response="2.0.0" 
+                    <TextDetailVersionApp
+                        icon={<MaterialIcons name="phone-iphone" size={24} color={COLORS.orange[900]} />}
+                        title="Versão"
+                        response={version}
                     />
-                    <TextDetailVersionApp 
-                        icon={<Feather name="git-branch" size={24} color={COLORS.orange[900]} />} 
-                        title="Branch" 
-                        response="main" 
+
+                    <TextDetailVersionApp
+                        icon={<Feather name="git-branch" size={24} color={COLORS.orange[900]} />}
+                        title="Branch"
+                        response={branch}
                     />
-                    <TextDetailVersionApp 
-                        icon={<MaterialIcons name="calendar-today" size={24} color={COLORS.orange[900]} />} 
-                        title="Publicado em" 
-                        response="13/09/2026" 
+
+                    <TextDetailVersionApp
+                        icon={<MaterialIcons name="calendar-today" size={24} color={COLORS.orange[900]} />}
+                        title="Publicado em"
+                        response={formatPublishedAt(publishedAt)}
                     />
                 </View>
             </View>
