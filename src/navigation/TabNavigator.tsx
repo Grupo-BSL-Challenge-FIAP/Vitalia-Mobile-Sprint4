@@ -5,7 +5,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 import NotificationsScreen from "../screens/NotificationsScreen";
 import ProfileStackNavigator from "./ProfileStackNavigator";
-import ConsultationsScreen from "../screens/ConsultationsScreen";
 import HomeStackNavigator from "./HomeStackNavigator";
 import ConsultationStackNavigator from "./ConsultationStackNavigator";
 
