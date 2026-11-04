@@ -20,14 +20,26 @@ export default function ButtonLink({
   children,
   iconLeft,
   iconRight,
-  gapTextIcon
+  gapTextIcon,
+  onPress
 }: ButtonLinkType) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+      return;
+    }
+
+    if (route) {
+      navigation.navigate(route as never);
+    }
+  };
+
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate(route)}
+      onPress={handlePress}
       style={{
         backgroundColor: backgroundColor || COLORS.orange[900],
         paddingVertical: paddingVertical || 11,
@@ -38,6 +50,7 @@ export default function ButtonLink({
         borderColor: borderColor || COLORS.orange[900],
         flexDirection: "row",
         justifyContent: "center",
+        gap: gapTextIcon || 0,
       }}
     >
       {iconLeft}
