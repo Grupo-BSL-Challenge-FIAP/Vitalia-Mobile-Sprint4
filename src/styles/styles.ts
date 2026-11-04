@@ -66,6 +66,8 @@ export const COLORS = {
         200: '#C4C4C4',
         300: '#73574D',
         400: '#8A6F63',
+        500: '#E8D2C4',
+        600: '#D9B6A8',
     },
 
     // Yellow
