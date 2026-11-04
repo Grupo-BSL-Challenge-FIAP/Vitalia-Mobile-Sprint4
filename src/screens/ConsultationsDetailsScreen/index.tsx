@@ -1,7 +1,18 @@
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Header from "../../components/Header";
 import LayoutWrapper from "../../components/LayoutWrapper";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { ConsultationStackParamList } from "../../navigation/ConsultationStackNavigator";
 import CardPetConsultations from "../../components/CardPetConsultations";
 import { useMyPets } from "../../hooks/useMyPets";
@@ -14,6 +25,10 @@ import TitleOrange from "../../components/TitleOrange";
 import SubTitleOrange from "../../components/SubTitleOrange";
 import Feather from "@expo/vector-icons/Feather";
 import { useAppointmentById } from "../../hooks/useAppointmentById";
+import { useState } from "react";
+import DeleteAppointmentModal from "../../components/DeleteAppointmentModal";
+import { useDeleteAppointment } from "../../hooks/useDeleteAppointment";
+import axios from "axios";
 
 function formatAppointmentDate(value: string) {
   const date = new Date(value);
@@ -35,14 +50,25 @@ function formatAppointmentTime(value: string) {
     return "--h--";
   }
 
-  return date.toLocaleTimeString("pt-BR", {
+  return date
+    .toLocaleTimeString("pt-BR", {
       hour: "2-digit",
       minute: "2-digit",
-    }).replace(":", "h");
+    })
+    .replace(":", "h");
 }
 
 export default function ConsultatiionsDetailsScreen() {
-  const route = useRoute<RouteProp<ConsultationStackParamList, "ConsultatiionsDetailsScreen">>();
+  const route =
+    useRoute<
+      RouteProp<ConsultationStackParamList, "ConsultatiionsDetailsScreen">
+    >();
+
+  const navigation =
+    useNavigation<NavigationProp<ConsultationStackParamList>>();
+
+  const [isDeleteAppointmentModalVisible, setIsDeleteAppointmentModalVisible] =
+    useState(false);
 
   const { appointmentId, petId } = route.params;
 
@@ -58,11 +84,11 @@ export default function ConsultatiionsDetailsScreen() {
     isError: isErrorPets,
   } = useMyPets();
 
+  const deleteAppointmentMutation = useDeleteAppointment();
+
   const { getPetImage } = useImages();
 
-  const pet = pets.find(
-    (pet) => pet.id === (appointment?.petId ?? petId),
-  );
+  const pet = pets.find((pet) => pet.id === (appointment?.petId ?? petId));
 
   const getSpeciesIdFromPet = (pet: any) => {
     if (typeof pet?.speciesId === "number") {
@@ -75,6 +101,60 @@ export default function ConsultatiionsDetailsScreen() {
 
     return null;
   };
+
+const handleDeleteAppointment = () => {
+  if (!appointment || deleteAppointmentMutation.isPending) {
+    return;
+  }
+
+  deleteAppointmentMutation.mutate(appointment.id, {
+    onSuccess: () => {
+      setIsDeleteAppointmentModalVisible(false);
+      navigation.goBack();
+    },
+
+    onError: (error: unknown) => {
+      console.error("Erro ao cancelar consulta:", error);
+
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data as
+          | {
+              message?: string;
+              error?: string;
+              detail?: string;
+            }
+          | string
+          | undefined;
+
+        const backendMessage =
+          typeof responseData === "string"
+            ? responseData
+            : responseData?.message ??
+              responseData?.detail ??
+              responseData?.error;
+
+        console.log("Status HTTP:", error.response?.status);
+        console.log("Resposta da API:", error.response?.data);
+
+        Alert.alert(
+          `Erro ao cancelar consulta (${error.response?.status ?? "sem resposta"})`,
+          backendMessage ||
+            error.message ||
+            "Não foi possível cancelar a consulta. Tente novamente.",
+        );
+
+        return;
+      }
+
+      Alert.alert(
+        "Erro ao cancelar consulta",
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro inesperado.",
+      );
+    },
+  });
+};
 
   const isLoading = isLoadingAppointment || isLoadingPets;
   const isError = isErrorAppointment || isErrorPets;
@@ -92,10 +172,7 @@ export default function ConsultatiionsDetailsScreen() {
         }}
       >
         {isLoading && (
-          <ActivityIndicator
-            size="large"
-            color={COLORS.orange[900]}
-          />
+          <ActivityIndicator size="large" color={COLORS.orange[900]} />
         )}
 
         {isError && (
@@ -159,11 +236,7 @@ export default function ConsultatiionsDetailsScreen() {
 
               <CardConsultationInformationDetails
                 icon={
-                  <Feather 
-                    name="clock" 
-                    size={24} 
-                    color={COLORS.orange[900]} 
-                  />
+                  <Feather name="clock" size={24} color={COLORS.orange[900]} />
                 }
                 title={formatAppointmentTime(appointment.appointmentDate)}
                 subTitle="Hora"
@@ -189,8 +262,7 @@ export default function ConsultatiionsDetailsScreen() {
               <View>
                 <TitleOrange
                   title={
-                    appointment.veterinarianName ||
-                    "Veterinário não informado"
+                    appointment.veterinarianName || "Veterinário não informado"
                   }
                   fontFamily={FONTS.inter[500]}
                   fontSize={15}
@@ -212,11 +284,7 @@ export default function ConsultatiionsDetailsScreen() {
               paddingLeft={16}
             >
               <View>
-                <Feather
-                  name="map-pin"
-                  size={24}
-                  color={COLORS.orange[900]}
-                />
+                <Feather name="map-pin" size={24} color={COLORS.orange[900]} />
               </View>
 
               <View>
@@ -249,9 +317,78 @@ export default function ConsultatiionsDetailsScreen() {
                 />
               </View>
             </CardConsultationDetail>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setIsDeleteAppointmentModalVisible(true)}
+                style={{
+                  paddingVertical: 10.5,
+                  paddingHorizontal: 12.5,
+                  borderColor: COLORS.red[800],
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.red[815],
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: FONTS.inter[700],
+                    color: COLORS.red[600],
+                    textAlign: "center",
+                  }}
+                >
+                  Cancelar consulta
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10.5,
+                  paddingHorizontal: 12.5,
+                  borderColor: COLORS.green[200],
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.green[220],
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: FONTS.inter[700],
+                    color: COLORS.green[200],
+                    textAlign: "center",
+                  }}
+                >
+                  Confirmar consulta
+                </Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
       </View>
+
+      <DeleteAppointmentModal
+        visible={isDeleteAppointmentModalVisible}
+        onClose={() => setIsDeleteAppointmentModalVisible(false)}
+        onConfirm={handleDeleteAppointment}
+        isDeleting={deleteAppointmentMutation.isPending}
+        petName={pet?.name ?? "Pet"}
+        appointmentTitle={appointment?.notes || "Consulta"}
+        appointmentDate={
+          appointment
+            ? `${formatAppointmentDate(appointment.appointmentDate)}, às ${formatAppointmentTime(appointment.appointmentDate)}`
+            : "Data não informada"
+        }
+        veterinarianName={
+          appointment?.veterinarianName || "Veterinário não informado"
+        }
+      />
     </LayoutWrapper>
   );
 }
