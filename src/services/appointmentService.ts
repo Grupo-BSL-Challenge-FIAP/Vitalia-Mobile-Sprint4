@@ -28,4 +28,8 @@ export const appointmentService = {
 
     return response.data;
   },
+
+  deleteById: async (appointmentId: number): Promise<void> => {
+    await api.delete(`/appointments/${appointmentId}`);
+  },
 };
