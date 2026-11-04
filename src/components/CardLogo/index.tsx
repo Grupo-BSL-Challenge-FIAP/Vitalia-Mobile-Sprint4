@@ -2,7 +2,11 @@ import { Image, View } from "react-native";
 import SubTitleOrange from "../SubTitleOrange";
 import { FONTS } from "../../styles/styles";
 
-export default function CardLogo() {
+interface CardLogoProps {
+    version: string;
+}
+
+export default function CardLogo({ version }: CardLogoProps) {
     return(
         <View
             style={{
@@ -11,7 +15,12 @@ export default function CardLogo() {
             }}
         >
             <Image source={require('../../assets/logo_sobre_app.png')} />
-            <SubTitleOrange title="Versão 2.0.0" fontFamily={FONTS.inter[500]} fontSize={13}/>
+
+            <SubTitleOrange
+                title={`Versão ${version}`}
+                fontFamily={FONTS.inter[500]}
+                fontSize={13}
+            />
         </View>
     )
 }
