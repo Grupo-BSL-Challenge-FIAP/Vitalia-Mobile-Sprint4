@@ -16,6 +16,7 @@ import { useMyPets } from "../../hooks/useMyPets";
 import { useImages } from "../../contexts/ImageContext";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useVeterinarians } from "../../hooks/useVeterinarians";
 
 export default function ScheduleAppointment() {
   const { data: pets = [], isLoading, isError } = useMyPets();
@@ -26,6 +27,14 @@ export default function ScheduleAppointment() {
   const [consultationType, setConsultationType] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [selectedVeterinarianId, setSelectedVeterinarianId] = useState<
+    number | null
+  >(null);
+  const {
+    data: veterinarians = [],
+    isLoading: isLoadingVeterinarians,
+    isError: isVeterinariansError,
+  } = useVeterinarians();
 
   return (
     <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -248,6 +257,95 @@ export default function ScheduleAppointment() {
                     : "Selecionar"}
                 </Text>
               </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                marginTop: 30,
+              }}
+            >
+              <TitleOrange
+                title="Tipo de consulta"
+                fontSize={15}
+                fontFamily={FONTS.inter[500]}
+                color={COLORS.orange[710]}
+              />
+
+              {isLoadingVeterinarians && (
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: COLORS.gray[400],
+                    fontFamily: FONTS.inter[500],
+                  }}
+                >
+                  Carregando veterinários...
+                </Text>
+              )}
+
+              {isVeterinariansError && (
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: COLORS.gray[400],
+                    fontFamily: FONTS.inter[500],
+                  }}
+                >
+                  Não foi possível carregar os veterinários. Tente novamente.
+                </Text>
+              )}
+
+              {!isLoadingVeterinarians &&
+                !isVeterinariansError &&
+                veterinarians.length === 0 && (
+                  <Text
+                    style={{
+                      marginTop: 10,
+                      color: COLORS.gray[400],
+                      fontFamily: FONTS.inter[500],
+                    }}
+                  >
+                    Nenhum veterinário disponível.
+                  </Text>
+                )}
+
+              <View
+                style={{
+                  width: 262,
+                  marginTop: 10,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  borderColor: COLORS.orange[710],
+                  overflow: "hidden",
+                }}
+              >
+                <Picker
+                  selectedValue={selectedVeterinarianId}
+                  onValueChange={(itemValue) =>
+                    setSelectedVeterinarianId(itemValue)
+                  }
+                  enabled={
+                    !isLoadingVeterinarians &&
+                    !isVeterinariansError &&
+                    veterinarians.length > 0
+                  }
+                  style={{
+                    color: COLORS.orange[780],
+                    height: 55,
+                    fontFamily: FONTS.inter[700],
+                  }}
+                >
+                  <Picker.Item label="Selecionar veterinário" value={null} />
+
+                  {veterinarians.map((veterinarian) => (
+                    <Picker.Item
+                      key={veterinarian.id}
+                      label={veterinarian.fullName}
+                      value={veterinarian.id}
+                    />
+                  ))}
+                </Picker>
+              </View>
             </View>
           </View>
         </View>
