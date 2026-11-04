@@ -52,9 +52,11 @@ export const COLORS = {
         900: '#1565C0',
     },
 
-    // Red
+    // Green
     green: {
-        100: '#2CB44E'
+        100: '#2CB44E',
+        200: '#259236',
+        220: '#25923620',
     },
 
     // Gray
@@ -62,6 +64,12 @@ export const COLORS = {
         100: '#7C7C7C',
         200: '#C4C4C4',
         300: '#73574D',
+    },
+
+    // Yellow
+    yellow: {
+        100: '#C3A83C',
+        120: '#C3A83C20',
     }
 }
 
