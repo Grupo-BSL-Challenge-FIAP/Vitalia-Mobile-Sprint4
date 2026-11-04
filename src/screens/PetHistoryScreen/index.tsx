@@ -7,14 +7,14 @@ import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../../components/TitleOrange";
 import SubTitleOrange from "../../components/SubTitleOrange";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { PetsStackParamList } from "../../navigation/PetsStackNavigator";
+import { HomeStackParamList } from "../../navigation/HomeStackNavigator";
 import { useMyPets } from "../../hooks/useMyPets";
 import CardNumber from "../../components/CardNumber";
 import { usePetAppointments } from "../../hooks/usePetAppointments";
 import { useMeasurementHistory } from "../../hooks/useMeasurementHistory";
 import ContainerPetHistory from "../../components/ContainerPetHistory";
 
-type PetHistoryRouteProp = RouteProp<PetsStackParamList, "PetHistoryScreen">;
+type PetHistoryRouteProp = RouteProp<HomeStackParamList, "PetHistoryScreen">;
 
 export default function PetHistoryScreen() {
   const route = useRoute<PetHistoryRouteProp>();
