@@ -7,6 +7,7 @@ import NotificationsScreen from "../screens/NotificationsScreen";
 import ProfileStackNavigator from "./ProfileStackNavigator";
 import ConsultationsScreen from "../screens/ConsultationsScreen";
 import HomeStackNavigator from "./HomeStackNavigator";
+import ConsultationStackNavigator from "./ConsultationStackNavigator";
 
 const Tab = createBottomTabNavigator<RootStackParamList, "MainTabs">();
 
@@ -74,7 +75,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Consultas"
-        component={ConsultationsScreen}
+        component={ConsultationStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
