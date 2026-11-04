@@ -14,6 +14,7 @@ import PetsDetailScreen from "../screens/PetsDetailScreen";
 import AccountUserScreen from "../screens/AccountUserScreen";
 import AboutApplicationScreen from "../screens/AboutApplicationScreen";
 import PetHistoryScreen from "../screens/PetHistoryScreen";
+import ConsultationsScreen from "../screens/ConsultationsScreen";
 
 export type RootStackParamList = {
   HomeLoginCadastroScreen: undefined;
@@ -36,6 +37,7 @@ export type RootStackParamList = {
   PetDetailScreen: { petId: number; };
   AboutApplicationScreen: undefined;
   PetHistoryScreen: { petId: number; };
+  Consultas: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList, "RootStack">();
@@ -117,6 +119,11 @@ export default function AppNavigator() {
           <Stack.Screen
             name="PetHistoryScreen"
             component={PetHistoryScreen}
+          />
+
+          <Stack.Screen
+            name="Consultas"
+            component={ConsultationsScreen}
           />
         </>
       ) : (
