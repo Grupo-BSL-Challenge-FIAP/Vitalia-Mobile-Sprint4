@@ -27,6 +27,7 @@ export default function ScheduleAppointment() {
   const [consultationType, setConsultationType] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedVeterinarianId, setSelectedVeterinarianId] = useState<
     number | null
   >(null);
@@ -345,6 +346,63 @@ export default function ScheduleAppointment() {
                     />
                   ))}
                 </Picker>
+              </View>
+            </View>
+
+            <View
+              style={{
+                marginTop: 30,
+                gap: 10,
+              }}
+            >
+              <TitleOrange
+                title="Horário disponível"
+                fontSize={15}
+                fontFamily={FONTS.inter[500]}
+                color={COLORS.orange[710]}
+              />
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: 15,
+                }}
+              >
+                {["09h00", "10h30", "13h00", "15h30"].map((time) => {
+                  const isSelected = selectedTime === time;
+
+                  return (
+                    <Pressable
+                      key={time}
+                      onPress={() => setSelectedTime(time)}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: isSelected }}
+                      style={{
+                        paddingVertical: 8,
+                        paddingHorizontal: 15,
+                        backgroundColor: isSelected
+                          ? COLORS.orange[900]
+                          : "transparent",
+                        borderWidth: isSelected ? 0 : 1,
+                        borderRadius: 10,
+                        borderColor: COLORS.orange[900],
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: isSelected
+                            ? COLORS.white[100]
+                            : COLORS.orange[900],
+                          fontFamily: FONTS.inter[500],
+                          fontSize: 15,
+                        }}
+                      >
+                        {time}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </View>
           </View>
