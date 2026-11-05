@@ -1,7 +1,5 @@
-import { Image, View } from "react-native";
-import TitleOrange from "../TitleOrange";
+import { Image, View, Text } from "react-native";
 import { COLORS, FONTS } from "../../styles/styles";
-import ContainerTitleSubTitle from "../ContainerTitleSubTitle";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import CardStatus from "../CardStatus";
 import ContainerStatus from "../ContainerStatus";
@@ -10,7 +8,7 @@ import { useActivePet } from "../../contexts/ActivePetContext";
 import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/AppNavigator";
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
 
 export default function StatusPet() {
   const { activePetId } = useActivePet();
@@ -38,7 +36,15 @@ export default function StatusPet() {
         gap: 10,
       }}
     >
-      <TitleOrange title="Status" fontFamily={FONTS.inter[700]} fontSize={24} />
+      <Text
+        style={{
+          color: "black",
+          fontFamily: FONTS.inter[700],
+          fontSize: 24,
+        }}
+      >
+        Status
+      </Text>
 
       <ContainerStatus>
         <CardStatus>
@@ -49,21 +55,34 @@ export default function StatusPet() {
           >
             <Image source={require("../../assets/iconSleep.png")} />
           </View>
-          <View>
-            <ContainerTitleSubTitle
-              alignItems="flex-start"
-              textTitle={sleepQuality}
-              fontFamilyTitle={FONTS.inter[700]}
-              fontSizeTiTleOrange={24}
-              colorTitleOrange={COLORS.orange[700]}
-              marginLeftTitleOrange={20}
-              textSubTitle="Qualidade do Sono"
-              fontSizeSubTitle={14}
-              fontFamilySubTitle={FONTS.inter[500]}
-              gap={20}
-            />
+          <View
+            style={{
+              alignItems: "flex-start",
+              gap: 20,
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[700],
+                fontSize: 24,
+                marginLeft: 20,
+              }}
+            >
+              {sleepQuality}
+            </Text>
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[500],
+                fontSize: 14,
+              }}
+            >
+              Qualidade do Sono
+            </Text>
           </View>
         </CardStatus>
+
         <CardStatus>
           <View
             style={{
@@ -72,20 +91,33 @@ export default function StatusPet() {
           >
             <FontAwesome6 name="heart-pulse" size={50} color="black" />
           </View>
-          <View>
-            <ContainerTitleSubTitle
-              alignItems="flex-start"
-              textTitle={heartRate}
-              fontFamilyTitle={FONTS.inter[700]}
-              fontSizeTiTleOrange={24}
-              colorTitleOrange={COLORS.orange[700]}
-              textSubTitle="Frequência cardíaca"
-              fontSizeSubTitle={14}
-              fontFamilySubTitle={FONTS.inter[500]}
-              gap={20}
-            />
+          <View
+            style={{
+              alignItems: "flex-start",
+              gap: 20,
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[700],
+                fontSize: 24,
+              }}
+            >
+              {heartRate}
+            </Text>
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[500],
+                fontSize: 14,
+              }}
+            >
+              Frequência cardíaca
+            </Text>
           </View>
         </CardStatus>
+
         <CardStatus paddingRight={10} paddingBottom={30}>
           <View
             style={{
@@ -94,20 +126,33 @@ export default function StatusPet() {
           >
             <FontAwesome6 name="paw" size={50} color="black" />
           </View>
-          <View>
-            <ContainerTitleSubTitle
-              alignItems="flex-start"
-              textTitle={activityLevel}
-              fontFamilyTitle={FONTS.inter[700]}
-              fontSizeTiTleOrange={24}
-              colorTitleOrange={COLORS.orange[700]}
-              textSubTitle="Nível de atividade"
-              fontSizeSubTitle={14}
-              fontFamilySubTitle={FONTS.inter[500]}
-              gap={20}
-            />
+          <View
+            style={{
+              alignItems: "flex-start",
+              gap: 20,
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[700],
+                fontSize: 24,
+              }}
+            >
+              {activityLevel}
+            </Text>
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[500],
+                fontSize: 14,
+              }}
+            >
+              Nível de atividade
+            </Text>
           </View>
         </CardStatus>
+
         <CardStatus paddingRight={10} paddingBottom={30}>
           <View
             style={{
@@ -116,20 +161,33 @@ export default function StatusPet() {
           >
             <FontAwesome6 name="temperature-half" size={50} color="black" />
           </View>
-          <View>
-            <ContainerTitleSubTitle
-              alignItems="flex-start"
-              textTitle={temperature}
-              fontFamilyTitle={FONTS.inter[700]}
-              fontSizeTiTleOrange={24}
-              colorTitleOrange={COLORS.orange[700]}
-              textSubTitle="Temperatura corporal"
-              fontSizeSubTitle={14}
-              fontFamilySubTitle={FONTS.inter[500]}
-              gap={20}
-            />
+          <View
+            style={{
+              alignItems: "flex-start",
+              gap: 20,
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[700],
+                fontSize: 24,
+              }}
+            >
+              {temperature}
+            </Text>
+            <Text
+              style={{
+                color: "black",
+                fontFamily: FONTS.inter[500],
+                fontSize: 14,
+              }}
+            >
+              Temperatura corporal
+            </Text>
           </View>
         </CardStatus>
+
         <View style={{ width: "100%" }}>
           <ButtonLink
             onPress={() => {
