@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, View, } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import Header from "../../components/Header";
 import TitleOrange from "../../components/TitleOrange";
@@ -11,11 +11,19 @@ import { useMyPets } from "../../hooks/useMyPets";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function AllPetsScreen() {
-  
-  const { data: pets = [], isLoading, isError,} = useMyPets();
-  const navigate = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { data: pets = [], isLoading, isError } = useMyPets();
+
+  const navigate =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { isDarkMode } = useTheme();
+
+  const textColor = isDarkMode
+    ? COLORS.white[100]
+    : COLORS.orange[900];
 
   return (
     <LayoutWrapper
@@ -52,7 +60,7 @@ export default function AllPetsScreen() {
               <Feather
                 name="plus-circle"
                 size={30}
-                color={COLORS.orange[900]}
+                color={textColor}
               />
             }
             route="PetRegisterScreen"
@@ -66,7 +74,7 @@ export default function AllPetsScreen() {
         {isLoading && (
           <ActivityIndicator
             size="large"
-            color={COLORS.orange[900]}
+            color={textColor}
           />
         )}
 
@@ -74,7 +82,7 @@ export default function AllPetsScreen() {
           <Text
             style={{
               fontFamily: FONTS.inter[500],
-              color: COLORS.orange[900],
+              color: textColor,
             }}
           >
             Não foi possível carregar seus pets.
@@ -87,7 +95,7 @@ export default function AllPetsScreen() {
             <Text
               style={{
                 fontFamily: FONTS.inter[500],
-                color: COLORS.orange[900],
+                color: textColor,
               }}
             >
               Você ainda não possui pets cadastrados.
