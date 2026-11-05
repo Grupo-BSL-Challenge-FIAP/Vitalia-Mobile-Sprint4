@@ -1,16 +1,23 @@
 {
   "expo": {
     "name": "Vitalia",
-    "slug": "Vitalia",
+    "slug": "vitalia",
     "version": "1.0.0",
     "plugins": [
       "expo-font",
       "expo-splash-screen",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-community/datetimepicker"
     ],
     "splash": {
       "image": "./src/assets/logo_splash_vitalia2.png",
       "resizeMode": "contain"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7232a140-740d-40f2-9eee-49e1880aeac5"
+      }
+    },
+    "owner": "moisesbarsoti"
   }
 }

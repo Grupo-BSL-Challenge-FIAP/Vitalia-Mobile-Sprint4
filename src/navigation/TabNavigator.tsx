@@ -1,19 +1,19 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DashboardResponsibleScreen from "../screens/DashboardResponsibleScreen";
 import { RootStackParamList } from "./AppNavigator";
 import { COLORS, FONTS } from "../styles/styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
-import PageUnderDevelopmentScreen from "../screens/PageUnderDevelopmentScreen";
-import AllPetsScreen from "../screens/AllPetsScreen";
-import AccountUserScreen from "../screens/AccountUserScreen";
 import NotificationsScreen from "../screens/NotificationsScreen";
+import ProfileStackNavigator from "./ProfileStackNavigator";
+import HomeStackNavigator from "./HomeStackNavigator";
+import ConsultationStackNavigator from "./ConsultationStackNavigator";
 
-const Tab = createBottomTabNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootStackParamList, "MainTabs">();
 
 export default function TabNavigator() {
   return (
     <Tab.Navigator
+      id="MainTabs"
       screenOptions={{
         headerShown: false,
 
@@ -44,7 +44,7 @@ export default function TabNavigator() {
     >
       <Tab.Screen
         name="Início"
-        component={DashboardResponsibleScreen}
+        component={HomeStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -73,8 +73,8 @@ export default function TabNavigator() {
       />
 
       <Tab.Screen
-        name="Pets"
-        component={AllPetsScreen}
+        name="Consultas"
+        component={ConsultationStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -93,7 +93,7 @@ export default function TabNavigator() {
               }}
             >
               <Ionicons
-                name={focused ? "paw" : "paw-outline"}
+                name={focused ? "calendar" : "calendar-outline"}
                 size={26}
                 color="white"
               />
@@ -134,7 +134,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Perfil"
-        component={AccountUserScreen}
+        component={ProfileStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View

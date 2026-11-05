@@ -1,19 +1,21 @@
+import { ReactNode } from "react";
 import { RootStackParamList } from "../navigation/AppNavigator";
 
 export interface ButtonLinkType {
-  route: keyof RootStackParamList;
+  route?: keyof RootStackParamList;
   paddingVertical?: number;
   paddingHorizontal?: number;
-  alignItems?: "center" | "flex-start" | "flex-end";
+  alignItems?: "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
   borderRadius?: number;
   backgroundColor?: string;
   fontFamily?: string;
   fontSize?: number;
   colorText?: string;
-  borderColor?: string;
   borderWidth?: number;
-  children: React.ReactNode;
-  iconLeft?: React.ReactNode;
-  iconRight?: React.ReactNode;
+  borderColor?: string;
+  children: ReactNode;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
   gapTextIcon?: number;
+  onPress?: () => void;
 }

@@ -12,6 +12,8 @@ import TabNavigator from "./TabNavigator";
 import { useAuth } from "../contexts/AuthContext";
 import PetsDetailScreen from "../screens/PetsDetailScreen";
 import AccountUserScreen from "../screens/AccountUserScreen";
+import AboutApplicationScreen from "../screens/AboutApplicationScreen";
+import PetHistoryScreen from "../screens/PetHistoryScreen";
 
 export type RootStackParamList = {
   HomeLoginCadastroScreen: undefined;
@@ -32,9 +34,12 @@ export type RootStackParamList = {
   Notificações: undefined;
   Perfil: undefined;
   PetDetailScreen: { petId: number; };
+  AboutApplicationScreen: undefined;
+  PetHistoryScreen: { petId: number; };
+  Consultas: undefined;
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList, "RootStack">();
 
 export default function AppNavigator() {
   const {
@@ -58,6 +63,12 @@ export default function AppNavigator() {
 
   return (
     <Stack.Navigator
+      id="RootStack"
+      initialRouteName={
+        isAuthenticated
+          ? "TabsDashboardResponsible"
+          : "HomeLoginCadastroScreen"
+      }
       screenOptions={{
         headerShown: false,
       }}
@@ -97,6 +108,16 @@ export default function AppNavigator() {
           <Stack.Screen
             name="PageUnderDevelopmentScreen"
             component={TabNavigator}
+          />
+
+          <Stack.Screen
+            name="AboutApplicationScreen"
+            component={AboutApplicationScreen}
+          />
+
+          <Stack.Screen
+            name="PetHistoryScreen"
+            component={PetHistoryScreen}
           />
         </>
       ) : (

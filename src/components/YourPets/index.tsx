@@ -1,12 +1,16 @@
-import { Image, Text, TouchableOpacity, View, } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import TitleOrange from "../TitleOrange";
-import TextLink from "../TextLink";
 import CardPet from "../CardPet";
 import { COLORS, FONTS } from "../../styles/styles";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 import { useMyPets } from "../../hooks/useMyPets";
+import { useImages } from "../../contexts/ImageContext";
+import { useActivePet } from "../../contexts/ActivePetContext";
+import { useTheme } from "../../contexts/ThemeContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { HomeStackParamList } from "../../navigation/HomeStackNavigator";
 
 export default function YourPets() {
   const {
@@ -15,37 +19,23 @@ export default function YourPets() {
     isError,
   } = useMyPets();
 
-  const [petActive, setPetActive] =
-    useState<number | null>(null);
+  const { getPetImage } = useImages();
+  const { activePetId, setActivePet, isLoadingActivePet } = useActivePet();
+  const { isDarkMode } = useTheme();
 
-  const activePet =
-    pets.find((pet) => pet.id === petActive) ??
-    pets[0];
+  const activePet = pets.find((pet) => pet.id === activePetId) ?? pets[0];
+  const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
 
-  const getPetAgeLabel = (
-    birthDate?: string,
-  ) => {
+  const getPetAgeLabel = (birthDate?: string) => {
     if (!birthDate) {
       return "";
     }
-    
-    const [year, month, day] = birthDate
-      .split("-")
-      .map(Number);
 
-    const birth = new Date(
-      year,
-      month - 1,
-      day,
-    );
-
+    const [year, month, day] = birthDate.split("-").map(Number);
+    const birth = new Date(year, month - 1, day);
     const today = new Date();
 
-    let months =
-      (today.getFullYear() -
-        birth.getFullYear()) *
-        12 +
-      (today.getMonth() - birth.getMonth());
+    let months = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
 
     if (today.getDate() < birth.getDate()) {
       months--;
@@ -72,53 +62,32 @@ export default function YourPets() {
     return `Idoso • ${years} anos`;
   };
 
+  const getSpeciesIdFromPet = (pet: any) => {
+    if (typeof pet?.speciesId === "number") {
+      return pet.speciesId;
+    }
+
+    if (typeof pet?.breed?.speciesId === "number") {
+      return pet.breed.speciesId;
+    }
+
+    return null;
+  };
+
   useEffect(() => {
-    const loadActivePet = async () => {
-      if (pets.length === 0) {
-        return;
-      }
+    if (isLoadingActivePet || pets.length === 0) {
+      return;
+    }
 
-      const activePetStorage =
-        await AsyncStorage.getItem(
-          "@petguardian:activePetId",
-        );
+    const petExists = activePetId !== null && pets.some((pet) => pet.id === activePetId);
 
-      if (activePetStorage) {
-        const activeId = Number(
-          activePetStorage,
-        );
+    if (!petExists) {
+      setActivePet(pets[0].id);
+    }
+  }, [pets, activePetId, isLoadingActivePet]);
 
-        const petExists = pets.some(
-          (pet) => pet.id === activeId,
-        );
-
-        if (petExists) {
-          setPetActive(activeId);
-
-          return;
-        }
-      }
-
-      setPetActive(pets[0].id);
-
-      await AsyncStorage.setItem(
-        "@petguardian:activePetId",
-        String(pets[0].id),
-      );
-    };
-
-    loadActivePet();
-  }, [pets]);
-
-  const handleActivePet = async (
-    id: number,
-  ) => {
-    setPetActive(id);
-
-    await AsyncStorage.setItem(
-      "@petguardian:activePetId",
-      String(id),
-    );
+  const handleActivePet = async (id: number) => {
+    await setActivePet(id);
   };
 
   return (
@@ -136,25 +105,35 @@ export default function YourPets() {
           fontFamily={FONTS.inter[700]}
         />
 
-        <TextLink
-          route="TabsPet"
-          textLink="Ver todos"
-          fontFamily={FONTS.inter[500]}
-          iconRight={
-            <Entypo
-              name="chevron-small-right"
-              size={23}
-              color={COLORS.orange[900]}
-            />
-          }
-        />
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AllPetsScreen")}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: FONTS.inter[500],
+              color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
+            }}
+          >
+            Ver todos
+          </Text>
+
+          <Entypo
+            name="chevron-small-right"
+            size={23}
+            color={isDarkMode ? COLORS.white[100] : COLORS.orange[900]}
+          />
+        </TouchableOpacity>
       </View>
 
       {isLoading && (
         <Text
           style={{
             fontFamily: FONTS.inter[500],
-            color: COLORS.orange[900],
+            color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
             marginVertical: 15,
           }}
         >
@@ -166,7 +145,7 @@ export default function YourPets() {
         <Text
           style={{
             fontFamily: FONTS.inter[500],
-            color: COLORS.orange[900],
+            color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
             marginVertical: 15,
           }}
         >
@@ -180,7 +159,7 @@ export default function YourPets() {
           <Text
             style={{
               fontFamily: FONTS.inter[500],
-              color: COLORS.orange[900],
+              color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
               marginVertical: 15,
             }}
           >
@@ -206,17 +185,18 @@ export default function YourPets() {
                 }
               >
                 <Image
-                  source={require("../../assets/dogPaws.png")}
+                  source={getPetImage(
+                    pet.speciesId,
+                    pet.sex,
+                    undefined,
+                    pet.id,
+                  )}
                   style={{
                     width: 60,
                     height: 60,
                     borderRadius: 100,
-                    borderWidth:
-                      petActive === pet.id
-                        ? 3
-                        : 0,
-                    borderColor:
-                      COLORS.orange[500],
+                    borderWidth: activePetId === pet.id ? 3 : 0,
+                    borderColor: COLORS.orange[500],
                   }}
                 />
               </TouchableOpacity>
@@ -227,13 +207,17 @@ export default function YourPets() {
             <CardPet>
               <View>
                 <Image
-                  source={require("../../assets/dogPaws.png")}
+                  source={getPetImage(
+                    getSpeciesIdFromPet(activePet),
+                    activePet.sex,
+                    undefined,
+                    activePet.id,
+                  )}
                   style={{
                     width: 84,
                     height: 84,
                     borderRadius: 10,
-                    borderColor:
-                      COLORS.orange[500],
+                    borderColor: COLORS.orange[500],
                     borderWidth: 2,
                   }}
                 />
@@ -247,11 +231,9 @@ export default function YourPets() {
                 <View>
                   <Text
                     style={{
-                      fontFamily:
-                        FONTS.inter[700],
+                      fontFamily: FONTS.inter[700],
                       fontSize: 20,
-                      color:
-                        COLORS.orange[100],
+                      color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                       lineHeight: 20,
                     }}
                   >
@@ -260,16 +242,12 @@ export default function YourPets() {
 
                   <Text
                     style={{
-                      fontFamily:
-                        FONTS.inter[500],
+                      fontFamily: FONTS.inter[500],
                       fontSize: 13,
-                      color:
-                        COLORS.orange[100],
+                      color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                     }}
                   >
-                    {getPetAgeLabel(
-                      activePet.birthDate,
-                    )}
+                    {getPetAgeLabel(activePet.birthDate)}
                   </Text>
                 </View>
 
@@ -282,11 +260,9 @@ export default function YourPets() {
                   <View>
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[700],
+                        fontFamily: FONTS.inter[700],
                         fontSize: 14,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                         lineHeight: 15,
                       }}
                     >
@@ -295,11 +271,9 @@ export default function YourPets() {
 
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[500],
+                        fontFamily: FONTS.inter[500],
                         fontSize: 13,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                       }}
                     >
                       {activePet.breedName ?? "Não informada"}
@@ -309,11 +283,9 @@ export default function YourPets() {
                   <View>
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[700],
+                        fontFamily: FONTS.inter[700],
                         fontSize: 14,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                         lineHeight: 15,
                       }}
                     >
@@ -322,11 +294,9 @@ export default function YourPets() {
 
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[500],
+                        fontFamily: FONTS.inter[500],
                         fontSize: 13,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                       }}
                     >
                       {activePet.sex}

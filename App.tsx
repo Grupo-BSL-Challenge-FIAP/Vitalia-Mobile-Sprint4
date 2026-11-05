@@ -1,5 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/navigation/AppNavigator";
+import * as Notifications from "expo-notifications";
+import { ThemeProvider } from "./src/contexts/ThemeContext";
 
 import {
   useFonts,
@@ -18,6 +20,17 @@ import {
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./src/api/queryClient";
 import { AuthProvider } from "./src/contexts/AuthContext";
+import { ImageProvider } from "./src/contexts/ImageContext";
+import { ActivePetProvider } from "./src/contexts/ActivePetContext";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -37,12 +50,18 @@ export default function App() {
   }
 
   return (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </AuthProvider>
-  </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <ImageProvider>
+          <AuthProvider>
+            <ActivePetProvider>
+              <NavigationContainer>
+                <AppNavigator />
+              </NavigationContainer>
+            </ActivePetProvider>
+          </AuthProvider>
+        </ImageProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

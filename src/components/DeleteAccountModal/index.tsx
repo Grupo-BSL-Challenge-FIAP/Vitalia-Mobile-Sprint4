@@ -1,4 +1,4 @@
-import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Modal, Text, TouchableOpacity, View } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -6,6 +6,8 @@ import { COLORS, FONTS } from "../../styles/styles";
 import { useDeleteCurrentUser } from "../../hooks/useDeleteCurrentUser";
 import { useAuth } from "../../contexts/AuthContext";
 import { queryClient } from "../../api/queryClient";
+import { useImages } from "../../contexts/ImageContext";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 interface DeleteAccountModalProps {
   visible: boolean;
@@ -17,6 +19,8 @@ export default function DeleteAccountModal({
   onClose,
 }: DeleteAccountModalProps) {
   const deleteAccountMutation = useDeleteCurrentUser();
+  const { getUserImage } = useImages();
+  const { data: user } = useCurrentUser();
 
   const { logout } = useAuth();
 
@@ -40,32 +44,32 @@ export default function DeleteAccountModal({
         }
       },
 
-onError: (error: any) => {
-  console.error(
-    "STATUS DELETE:",
-    error?.response?.status,
-  );
+      onError: (error: any) => {
+        console.error(
+          "STATUS DELETE:",
+          error?.response?.status,
+        );
 
-  console.error(
-    "RESPOSTA DELETE:",
-    error?.response?.data,
-  );
+        console.error(
+          "RESPOSTA DELETE:",
+          error?.response?.data,
+        );
 
-  console.error(
-    "HEADERS DELETE:",
-    error?.config?.headers,
-  );
+        console.error(
+          "HEADERS DELETE:",
+          error?.config?.headers,
+        );
 
-  console.error(
-    "URL DELETE:",
-    `${error?.config?.baseURL}${error?.config?.url}`,
-  );
+        console.error(
+          "URL DELETE:",
+          `${error?.config?.baseURL}${error?.config?.url}`,
+        );
 
-  Alert.alert(
-    "Erro",
-    "Não foi possível excluir sua conta.",
-  );
-},
+        Alert.alert(
+          "Erro",
+          "Não foi possível excluir sua conta.",
+        );
+      },
     });
   };
 
@@ -106,8 +110,8 @@ onError: (error: any) => {
             <Text
               style={{
                 fontFamily: FONTS.inter[700],
-                fontSize: 22,
-                color: COLORS.red[600],
+                fontSize: 24,
+                color: COLORS.orange[900],
               }}
             >
               Excluir conta?
@@ -121,7 +125,11 @@ onError: (error: any) => {
                 right: 0,
               }}
             >
-              <AntDesign name="close-circle" size={30} color="black" />
+              <AntDesign
+                name="close-circle"
+                size={30}
+                color={COLORS.orange[900]}
+              />
             </TouchableOpacity>
           </View>
 
@@ -143,23 +151,37 @@ onError: (error: any) => {
                 marginBottom: 20,
               }}
             >
-              <MaterialCommunityIcons
-                name="delete-outline"
-                size={45}
-                color={COLORS.red[600]}
-              />
+              <View
+                style={{
+                  boxShadow: '1px 4px 10px 4px rgba(0, 0, 0, 0.25)',
+                  borderRadius: 10,
+                }}
+              >
+                <Image
+                  source={getUserImage(
+                    undefined,
+                    undefined,
+                    user?.id,
+                  )}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                  }}
+                />
+              </View>
             </View>
 
             <Text
               style={{
-                fontFamily: FONTS.inter[700],
-                fontSize: 17,
+                fontFamily: FONTS.inter[400],
+                fontSize: 24,
                 color: COLORS.orange[900],
                 textAlign: "center",
-                marginBottom: 10,
+                marginVertical: 10,
               }}
             >
-              Tem certeza que deseja excluir sua conta?
+              {user?.fullName ?? "Usuário"}
             </Text>
 
             <Text
@@ -171,8 +193,7 @@ onError: (error: any) => {
                 lineHeight: 20,
               }}
             >
-              Esta ação é permanente. Seus dados serão excluídos e não poderão
-              ser recuperados.
+              Sua conta será excluída. Caso queira recuperá-la, entre em contato com: vitaliabsl1@gmail.com.
             </Text>
           </View>
 
@@ -189,9 +210,9 @@ onError: (error: any) => {
               disabled={deleteAccountMutation.isPending}
               style={{
                 flex: 1,
-                paddingVertical: 11,
+                paddingVertical: 10,
                 borderWidth: 2,
-                borderColor: COLORS.orange[900],
+                borderColor: COLORS.red[700],
                 borderRadius: 8,
                 alignItems: "center",
               }}
@@ -200,7 +221,7 @@ onError: (error: any) => {
                 style={{
                   fontFamily: FONTS.inter[700],
                   fontSize: 15,
-                  color: COLORS.orange[900],
+                  color: COLORS.red[700],
                 }}
               >
                 Cancelar
@@ -212,10 +233,11 @@ onError: (error: any) => {
               disabled={deleteAccountMutation.isPending}
               style={{
                 flex: 1,
-                paddingVertical: 11,
-                backgroundColor: COLORS.red[600],
+                paddingVertical: 10,
+                backgroundColor: COLORS.red[700],
                 borderRadius: 8,
                 alignItems: "center",
+                justifyContent: 'center',
                 opacity: deleteAccountMutation.isPending ? 0.6 : 1,
               }}
             >

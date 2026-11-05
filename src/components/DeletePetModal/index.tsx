@@ -4,6 +4,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { COLORS, FONTS } from "../../styles/styles";
 import { PetResponse } from "../../services/petService";
 import { useDeletePet } from "../../hooks/useDeletePet";
+import { useImages } from "../../contexts/ImageContext";
 
 interface DeletePetModalProps {
   visible: boolean;
@@ -19,6 +20,7 @@ export default function DeletePetModal({
   onDeleted,
 }: DeletePetModalProps) {
   const deletePetMutation = useDeletePet();
+  const { getPetImage } = useImages();
 
   const handleDelete = () => {
     if (deletePetMutation.isPending) {
@@ -111,7 +113,12 @@ export default function DeletePetModal({
             }}
           >
             <Image
-              source={require("../../assets/dogPaws.png")}
+              source={getPetImage(
+                pet.speciesId,
+                pet.sex,
+                undefined,
+                pet.id,
+              )}
               style={{
                 width: 100,
                 height: 100,

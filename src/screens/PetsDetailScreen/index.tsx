@@ -36,6 +36,7 @@ export default function PetsDetailScreen() {
         style={{
           paddingHorizontal: 12,
           marginTop: 20,
+          marginBottom: 30,
           gap: 30,
         }}
       >
@@ -81,7 +82,7 @@ export default function PetsDetailScreen() {
               }}
             >
               <CardActionPet
-                onPress={() => console.log("Histórico:", pet.id)}
+                onPress={() => navigation.navigate('PetHistoryScreen', {petId: petId})}
                 text="Histórico"
                 icon={<Feather name="file-text" size={40} color="black" />}
               />
@@ -102,9 +103,9 @@ export default function PetsDetailScreen() {
               />
             </View>
 
-            <ContainerRecordHealth />
+            <ContainerRecordHealth petId={petId} />
 
-            <ContainerNextEvents />
+            <ContainerNextEvents petId={pet.id} />
 
             <EditPetModal
               visible={editModalVisible}

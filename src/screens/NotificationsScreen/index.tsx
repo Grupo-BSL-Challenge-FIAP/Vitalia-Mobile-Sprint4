@@ -1,10 +1,20 @@
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import LayoutWrapper from "../../components/LayoutWrapper";
 import Header from "../../components/Header";
 import { COLORS, FONTS } from "../../styles/styles";
 import { AlertResponse } from "../../services/alertService";
 import { useAlerts } from "../../hooks/useAlerts";
+import { AiRecommendationResponse } from "../../services/aiRecommendationService";
+import { useAiRecommendations } from "../../hooks/useAiRecommendations";
+import { useTheme } from "../../contexts/ThemeContext";
 
 type NotificationCardProps = {
   alert: AlertResponse;
@@ -12,9 +22,9 @@ type NotificationCardProps = {
 
 function NotificationCard({ alert }: NotificationCardProps) {
   const getAlertStyle = () => {
-    const severity = alert.severity?.toUpperCase();
+    const severity = alert.severity;
 
-    if (severity === "CRITICAL") {
+    if (severity === "HIGH") {
       return {
         icon: "alert-circle-outline" as const,
         iconColor: COLORS.red[600],
@@ -22,7 +32,7 @@ function NotificationCard({ alert }: NotificationCardProps) {
       };
     }
 
-    if (severity === "WARNING" || severity === "ATTENTION") {
+    if (severity === "MEDIUM") {
       return {
         icon: "alert-outline" as const,
         iconColor: COLORS.orange[900],
@@ -39,7 +49,7 @@ function NotificationCard({ alert }: NotificationCardProps) {
 
   const alertStyle = getAlertStyle();
 
-  const title = alert.type || "Alerta Vitalia";
+  const title = alert.alertType || "Alerta Vitalia";
 
   const description =
     alert.message || "Um novo alerta foi identificado para o seu pet.";
@@ -112,14 +122,123 @@ function NotificationCard({ alert }: NotificationCardProps) {
   );
 }
 
+type RecommendationCardProps = {
+  recommendation: AiRecommendationResponse;
+};
+
+function RecommendationCard({ recommendation }: RecommendationCardProps) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      style={{
+        width: "100%",
+        minHeight: 125,
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 2,
+        borderColor: COLORS.orange[900],
+        borderRadius: 12,
+        backgroundColor: COLORS.white[100],
+        paddingHorizontal: 18,
+        paddingVertical: 16,
+        marginBottom: 20,
+      }}
+    >
+      <View
+        style={{
+          width: 70,
+          height: 70,
+          borderRadius: 12,
+          alignItems: "center",
+          justifyContent: "center",
+          marginRight: 14,
+          backgroundColor: COLORS.orange[100],
+        }}
+      >
+        <MaterialCommunityIcons
+          name="lightbulb-on-outline"
+          size={36}
+          color={COLORS.orange[900]}
+        />
+      </View>
+
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <Text
+          style={{
+            fontFamily: FONTS.inter[700],
+            fontSize: 18,
+            lineHeight: 22,
+            color: COLORS.orange[900],
+            marginBottom: 8,
+          }}
+        >
+          {recommendation.recommendationType || "Insight Vitalia"}
+        </Text>
+
+        <Text
+          style={{
+            fontFamily: FONTS.inter[400],
+            fontSize: 16,
+            lineHeight: 22,
+            color: COLORS.orange[900],
+          }}
+        >
+          {recommendation.content}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
 export default function NotificationsScreen() {
+  const { isDarkMode } = useTheme();
+
   const {
     data: alerts = [],
-    isLoading,
-    isError,
-    isFetching,
-    refetch,
+    isLoading: isLoadingAlerts,
+    isError: isAlertsError,
+    isFetching: isFetchingAlerts,
+    refetch: refetchAlerts,
   } = useAlerts();
+
+  const {
+    data: recommendations = [],
+    isLoading: isLoadingRecommendations,
+    isError: isRecommendationsError,
+    isFetching: isFetchingRecommendations,
+    refetch: refetchRecommendations,
+  } = useAiRecommendations();
+
+  const isLoading = isLoadingAlerts || isLoadingRecommendations;
+
+  const isError = isAlertsError && isRecommendationsError;
+
+  const isFetching = isFetchingAlerts || isFetchingRecommendations;
+
+  const refetch = async () => {
+    await Promise.all([refetchAlerts(), refetchRecommendations()]);
+  };
+
+  const notifications = [
+    ...alerts.map((alert) => ({
+      type: "alert" as const,
+      id: alert.id,
+      createdAt: alert.createdAt,
+      data: alert,
+    })),
+
+    ...recommendations.map((recommendation) => ({
+      type: "recommendation" as const,
+      id: recommendation.id,
+      createdAt: recommendation.createdAt,
+      data: recommendation,
+    })),
+  ].sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+
+    return dateB - dateA;
+  });
 
   return (
     <LayoutWrapper paddingHorizontal={-1} paddingBottom={80}>
@@ -173,7 +292,7 @@ export default function NotificationsScreen() {
                 marginTop: 12,
                 fontFamily: FONTS.inter[500],
                 fontSize: 15,
-                color: COLORS.orange[900],
+                color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
               }}
             >
               Carregando alertas...
@@ -200,7 +319,7 @@ export default function NotificationsScreen() {
                 fontFamily: FONTS.inter[700],
                 fontSize: 18,
                 textAlign: "center",
-                color: COLORS.orange[900],
+                color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
               }}
             >
               Não foi possível carregar os alertas.
@@ -213,7 +332,7 @@ export default function NotificationsScreen() {
                 fontSize: 14,
                 lineHeight: 20,
                 textAlign: "center",
-                color: COLORS.orange[875],
+                color: isDarkMode ? COLORS.white[100] : COLORS.orange[875],
               }}
             >
               Verifique sua conexão e tente novamente.
@@ -244,7 +363,7 @@ export default function NotificationsScreen() {
               </Text>
             </TouchableOpacity>
           </View>
-        ) : alerts.length === 0 ? (
+        ) : notifications.length === 0 ? (
           <View
             style={{
               flex: 1,
@@ -275,7 +394,7 @@ export default function NotificationsScreen() {
                 marginTop: 18,
                 fontFamily: FONTS.inter[700],
                 fontSize: 20,
-                color: COLORS.orange[900],
+                color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
                 textAlign: "center",
               }}
             >
@@ -288,7 +407,7 @@ export default function NotificationsScreen() {
                 fontFamily: FONTS.inter[400],
                 fontSize: 15,
                 lineHeight: 21,
-                color: COLORS.orange[875],
+                color: isDarkMode ? COLORS.white[100] : COLORS.orange[875],
                 textAlign: "center",
               }}
             >
@@ -308,17 +427,27 @@ export default function NotificationsScreen() {
               style={{
                 fontFamily: FONTS.inter[600],
                 fontSize: 19,
-                color: COLORS.orange[900],
+                color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
                 marginLeft: 2,
                 marginBottom: 12,
               }}
             >
-              Alertas
+              Notificações recentes
             </Text>
 
-            {alerts.map((alert) => (
-              <NotificationCard key={alert.id} alert={alert} />
-            ))}
+            {notifications.map((notification) =>
+              notification.type === "alert" ? (
+                <NotificationCard
+                  key={`alert-${notification.id}`}
+                  alert={notification.data}
+                />
+              ) : (
+                <RecommendationCard
+                  key={`recommendation-${notification.id}`}
+                  recommendation={notification.data}
+                />
+              ),
+            )}
           </ScrollView>
         )}
       </View>
