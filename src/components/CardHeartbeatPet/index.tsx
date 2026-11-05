@@ -1,20 +1,35 @@
-import { Image, Text, TouchableOpacity, View, } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { COLORS, FONTS } from "../../styles/styles";
 import TitleOrange from "../TitleOrange";
 import SubTitleOrange from "../SubTitleOrange";
 import BpmCircle from "../BpmCircle";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Feather from '@expo/vector-icons/Feather';
+import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
-import { CardHeartbeatPetType } from '../../types/CardHeartbeatPetType';
+import { CardHeartbeatPetType } from "../../types/CardHeartbeatPetType";
 import { useImages } from "../../contexts/ImageContext";
 import { useLatestMeasurement } from "../../hooks/useLatestMeasurement";
 import { usePetAppointments } from "../../hooks/usePetAppointments";
+import { useTheme } from "../../contexts/ThemeContext";
 
-export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType) {
+export default function CardHeartbeatPet({
+  pet,
+  onPress,
+}: CardHeartbeatPetType) {
   const { getPetImage } = useImages();
+
   const { data: measurement, isLoading } = useLatestMeasurement(pet.id);
-  const { data: appointments = [], isLoading: isLoadingAppointments } = usePetAppointments(pet.id);
+
+  const {
+    data: appointments = [],
+    isLoading: isLoadingAppointments,
+  } = usePetAppointments(pet.id);
+
+  const { isDarkMode } = useTheme();
+
+  const iconColor = isDarkMode
+    ? COLORS.white[100]
+    : COLORS.orange[900];
 
   const heartRate = isLoading
     ? "..."
@@ -22,15 +37,18 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
       ? Math.round(measurement.heartRate)
       : null;
 
-  const nextAppointment = appointments.filter((appointment) => {
-    return (
-      new Date(appointment.appointmentDate).getTime() > Date.now() &&
-      appointment.status === "SCHEDULED"
-    );
-  }).sort((a, b) =>
-      new Date(a.appointmentDate).getTime() -
-      new Date(b.appointmentDate).getTime()
-  )[0];
+  const nextAppointment = appointments
+    .filter((appointment) => {
+      return (
+        new Date(appointment.appointmentDate).getTime() > Date.now() &&
+        appointment.status === "SCHEDULED"
+      );
+    })
+    .sort(
+      (a, b) =>
+        new Date(a.appointmentDate).getTime() -
+        new Date(b.appointmentDate).getTime()
+    )[0];
 
   const getAppointmentLabel = () => {
     if (isLoadingAppointments) {
@@ -68,7 +86,7 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
     <TouchableOpacity
       onPress={onPress}
       style={{
-        backgroundColor: COLORS.orange[100],
+        backgroundColor: isDarkMode ? "#1E1E1E" : COLORS.orange[100],
         borderTopWidth: 2,
         borderBottomWidth: 2,
         borderRightWidth: 1,
@@ -154,13 +172,13 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
             <Feather
               name="check-circle"
               size={24}
-              color={COLORS.orange[900]}
+              color={iconColor}
             />
           ) : (
             <FontAwesome6
               name="calendar-check"
               size={20}
-              color={COLORS.orange[900]}
+              color={iconColor}
             />
           )}
 
@@ -168,7 +186,7 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
             style={{
               fontFamily: FONTS.inter[700],
               fontSize: 14,
-              color: COLORS.orange[900],
+              color: iconColor,
             }}
           >
             {getAppointmentLabel()}
@@ -186,7 +204,7 @@ export default function CardHeartbeatPet({ pet, onPress,}: CardHeartbeatPetType)
         <Entypo
           name="chevron-small-right"
           size={35}
-          color="black"
+          color={isDarkMode ? COLORS.white[100] : "black"}
         />
       </View>
     </TouchableOpacity>
