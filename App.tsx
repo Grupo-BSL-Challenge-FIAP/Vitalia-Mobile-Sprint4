@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/navigation/AppNavigator";
 import * as Notifications from "expo-notifications";
+import { ThemeProvider } from "./src/contexts/ThemeContext";
 
 import {
   useFonts,
@@ -50,15 +51,17 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ImageProvider>
-        <AuthProvider>
-          <ActivePetProvider>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </ActivePetProvider>
-        </AuthProvider>
-      </ImageProvider>
+      <ThemeProvider>
+        <ImageProvider>
+          <AuthProvider>
+            <ActivePetProvider>
+              <NavigationContainer>
+                <AppNavigator />
+              </NavigationContainer>
+            </ActivePetProvider>
+          </AuthProvider>
+        </ImageProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
