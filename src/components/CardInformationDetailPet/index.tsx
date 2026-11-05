@@ -2,13 +2,12 @@ import { Text, View } from "react-native";
 import TitleOrange from "../TitleOrange";
 import Button from "../Button";
 import { COLORS, FONTS } from "../../styles/styles";
-
 import {
   Foundation,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-
 import { PetResponse } from "../../services/petService";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface CardInformationDetailPetProps {
   pet: PetResponse;
@@ -17,8 +16,18 @@ interface CardInformationDetailPetProps {
 
 export default function CardInformationDetailPet({
   pet,
-  onEdit
+  onEdit,
 }: CardInformationDetailPetProps) {
+  const { isDarkMode } = useTheme();
+
+  const textColor = isDarkMode
+    ? COLORS.white[100]
+    : COLORS.orange[900];
+
+  const iconColor = isDarkMode
+    ? COLORS.white[100]
+    : "black";
+
   const formatDate = (date?: string) => {
     if (!date) {
       return "Não informado";
@@ -60,7 +69,7 @@ export default function CardInformationDetailPet({
           paddingBottom: 16,
           borderRadius: 10,
           gap: 11,
-          boxShadow: '0px 0px 10px 2px rgba(0, 0, 0, 0.25)',
+          boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.25)",
         }}
       >
         {/* SEXO */}
@@ -85,7 +94,7 @@ export default function CardInformationDetailPet({
             <Foundation
               name="male-symbol"
               size={24}
-              color="black"
+              color={iconColor}
             />
 
             <TitleOrange
@@ -99,7 +108,7 @@ export default function CardInformationDetailPet({
             <Text
               style={{
                 fontFamily: FONTS.inter[400],
-                color: COLORS.orange[900],
+                color: textColor,
                 fontSize: 14,
               }}
             >
@@ -129,7 +138,7 @@ export default function CardInformationDetailPet({
             <MaterialCommunityIcons
               name="weight"
               size={24}
-              color="black"
+              color={iconColor}
             />
 
             <TitleOrange
@@ -143,7 +152,7 @@ export default function CardInformationDetailPet({
             <Text
               style={{
                 fontFamily: FONTS.inter[400],
-                color: COLORS.orange[900],
+                color: textColor,
                 fontSize: 14,
               }}
             >
@@ -173,7 +182,7 @@ export default function CardInformationDetailPet({
             <MaterialCommunityIcons
               name="cake-variant-outline"
               size={24}
-              color="black"
+              color={iconColor}
             />
 
             <TitleOrange
@@ -187,7 +196,7 @@ export default function CardInformationDetailPet({
             <Text
               style={{
                 fontFamily: FONTS.inter[400],
-                color: COLORS.orange[900],
+                color: textColor,
                 fontSize: 14,
               }}
             >
