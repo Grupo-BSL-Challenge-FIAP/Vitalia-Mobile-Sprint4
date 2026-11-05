@@ -4,6 +4,7 @@ import { COLORS, FONTS } from "../../styles/styles";
 import Cardinsight from "../CardInsight";
 import TextLink from "../TextLink";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface ContainerInsightsProps {
   insights?: string[];
@@ -14,6 +15,8 @@ export default function ContainerInsights({
   insights = [],
   isLoading = false,
 }: ContainerInsightsProps) {
+  const { isDarkMode } = useTheme();
+
   return (
     <View>
       <TitleOrange
@@ -47,19 +50,26 @@ export default function ContainerInsights({
 
       <View
         style={{
-          alignItems:"center",
+          alignItems: "center",
           marginTop: 57,
-          paddingBottom: 50
+          paddingBottom: 50,
         }}
       >
         <TextLink
           route="Notificações"
           textLink="Ver histórico de insights"
+          colorText={isDarkMode ? COLORS.white[100] : COLORS.orange[900]}
           fontFamily={FONTS.inter[700]}
           fontSize={20}
           gap={8}
           opacity={0.70}
-          iconRight={<AntDesign name="arrow-right" size={15} color={COLORS.orange[900]} />}
+          iconRight={
+            <AntDesign
+              name="arrow-right"
+              size={15}
+              color={isDarkMode ? COLORS.white[100] : COLORS.orange[900]}
+            />
+          }
         />
       </View>
     </View>
