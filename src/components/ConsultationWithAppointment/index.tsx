@@ -15,11 +15,13 @@ import CardPetConsultations from "../CardPetConsultations";
 import { useAllPetAppointments } from "../../hooks/useAllPetAppointments";
 import { useImages } from "../../contexts/ImageContext";
 import TitleOrange from "../TitleOrange";
+import { useTheme } from "../../contexts/ThemeContext";
 
 type PetFilter = "Todos" | number;
 
 export default function ConsultationWithAppointment() {
   const [active, setActive] = useState<PetFilter>("Todos");
+  const { isDarkMode } = useTheme();
 
   const {
     data: pets = [],
@@ -76,7 +78,11 @@ export default function ConsultationWithAppointment() {
         onPress={() => setActive(filter)}
         style={{
           position: "relative",
-          backgroundColor: isActive ? COLORS.orange[900] : COLORS.white[100],
+          backgroundColor: isActive
+            ? COLORS.orange[900]
+            : isDarkMode
+              ? "#121212"
+              : COLORS.white[100],
           borderWidth: isActive ? 0 : 1,
           borderColor: COLORS.orange[970],
           borderRadius: 20,
@@ -84,7 +90,9 @@ export default function ConsultationWithAppointment() {
       >
         <Text
           style={{
-            color: isActive ? COLORS.white[100] : COLORS.orange[970],
+            color: isActive || isDarkMode
+              ? COLORS.white[100]
+              : COLORS.orange[970],
             paddingVertical: 6,
             paddingHorizontal: 20,
             fontFamily: FONTS.inter[700],
@@ -109,14 +117,14 @@ export default function ConsultationWithAppointment() {
       {isLoading && (
         <ActivityIndicator
           size="small"
-          color={COLORS.orange[900]}
+          color={isDarkMode ? COLORS.white[100] : COLORS.orange[900]}
         />
       )}
 
       {isError && (
         <Text
           style={{
-            color: COLORS.orange[900],
+            color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
             fontFamily: FONTS.inter[500],
           }}
         >
@@ -150,19 +158,19 @@ export default function ConsultationWithAppointment() {
             <View
               style={{
                 flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 600
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 600,
               }}
             >
               <Image
-                source={require('../../assets/appointment_card.png')}
+                source={require("../../assets/appointment_card.png")}
               />
 
               <View
                 style={{
                   gap: 10,
-                  marginTop: 30
+                  marginTop: 30,
                 }}
               >
                 <TitleOrange
@@ -179,7 +187,7 @@ export default function ConsultationWithAppointment() {
               <View
                 style={{
                   paddingHorizontal: 40,
-                  marginVertical: 20
+                  marginVertical: 20,
                 }}
               >
                 <ButtonScheduledAppointment />
@@ -187,11 +195,11 @@ export default function ConsultationWithAppointment() {
 
               <View
                 style={{
-                  alignItems: 'center',
+                  alignItems: "center",
                   marginBottom: 20,
                 }}
               >
-                <SubTitleOrange 
+                <SubTitleOrange
                   title="Toque em algum dos cards para ver mais detalhes"
                   fontSize={12}
                   fontFamily={FONTS.inter[400]}
@@ -216,20 +224,20 @@ export default function ConsultationWithAppointment() {
 
                   return (
                     <CardPetConsultations
-                        key={appointment.id}
-                        appointmentId={appointment.id}
-                        petId={appointment.petId}
-                        petName={pet.name}
-                        petImage={getPetImage(
-                            getSpeciesIdFromPet(pet),
-                            pet.sex,
-                            undefined,
-                            pet.id,
-                        )}
-                        title={appointment.notes || "Consulta"}
-                        veterinarianName={appointment.veterinarianName}
-                        appointmentDate={appointment.appointmentDate}
-                        status={appointment.status}
+                      key={appointment.id}
+                      appointmentId={appointment.id}
+                      petId={appointment.petId}
+                      petName={pet.name}
+                      petImage={getPetImage(
+                        getSpeciesIdFromPet(pet),
+                        pet.sex,
+                        undefined,
+                        pet.id,
+                      )}
+                      title={appointment.notes || "Consulta"}
+                      veterinarianName={appointment.veterinarianName}
+                      appointmentDate={appointment.appointmentDate}
+                      status={appointment.status}
                     />
                   );
                 })}
