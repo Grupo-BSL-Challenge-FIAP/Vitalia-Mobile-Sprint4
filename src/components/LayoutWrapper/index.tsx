@@ -4,6 +4,7 @@ import { BACKGROUND } from "../../styles/styles";
 import DogPaws from "../DogPaws";
 import DogPawBottomTop from "../DogPawBottomTop";
 import HeaderDashboardResponsible from "../HeaderDashboardResponsible";
+import { useTheme } from "../../contexts/ThemeContext";
 export interface LayoutWrapperProps {
   children: React.ReactNode;
   paddingHorizontal?: number;
@@ -27,12 +28,17 @@ export default function LayoutWrapper({
   justifyContent,
   alignItems,
 }: LayoutWrapperProps) {
+
+  const { isDarkMode } = useTheme();
+
   return (
     <>
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: BACKGROUND.backgroundMain,
+          backgroundColor: isDarkMode
+          ? "#121212"
+          : BACKGROUND.backgroundMain,
           paddingHorizontal: paddingHorizontal || 15,
           paddingBottom: paddingBottom || 0,
         }}
