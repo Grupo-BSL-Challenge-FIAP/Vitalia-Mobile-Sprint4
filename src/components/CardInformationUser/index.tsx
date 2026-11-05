@@ -3,9 +3,14 @@ import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import TitleOrange from "../TitleOrange";
 import { COLORS, FONTS } from "../../styles/styles";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function CardInformationUser() {
   const { data: user, isLoading, isError } = useCurrentUser();
+  const { isDarkMode } = useTheme();
+
+  const textColor = isDarkMode ? COLORS.white[100] : COLORS.orange[900];
+  const titleColor = isDarkMode ? COLORS.white[100] : COLORS.orange[875];
 
   const formatDate = (date?: string | null) => {
     if (!date) {
@@ -44,7 +49,10 @@ export default function CardInformationUser() {
           paddingVertical: 30,
         }}
       >
-        <ActivityIndicator size="small" color={COLORS.orange[900]} />
+        <ActivityIndicator
+          size="small"
+          color={textColor}
+        />
       </View>
     );
   }
@@ -62,7 +70,7 @@ export default function CardInformationUser() {
         <Text
           style={{
             fontFamily: FONTS.inter[500],
-            color: COLORS.orange[900],
+            color: textColor,
             marginTop: 10,
           }}
         >
@@ -92,7 +100,7 @@ export default function CardInformationUser() {
           paddingBottom: 16,
           borderRadius: 10,
           gap: 11,
-          boxShadow: '0px 4px 7px rgba(0, 0, 0, 0.25)',
+          boxShadow: "0px 4px 7px rgba(0, 0, 0, 0.25)",
         }}
       >
         {/* NASCIMENTO */}
@@ -117,21 +125,21 @@ export default function CardInformationUser() {
             <MaterialCommunityIcons
               name="cake-variant-outline"
               size={24}
-              color={COLORS.orange[900]}
+              color={textColor}
             />
 
             <TitleOrange
               title="Nascimento"
               fontFamily={FONTS.inter[600]}
               fontSize={18}
-              color={COLORS.orange[875]}
+              color={titleColor}
             />
           </View>
 
           <Text
             style={{
               fontFamily: FONTS.inter[400],
-              color: COLORS.orange[900],
+              color: textColor,
               fontSize: 14,
             }}
           >
@@ -161,21 +169,21 @@ export default function CardInformationUser() {
             <FontAwesome
               name="phone"
               size={24}
-              color={COLORS.orange[900]}
+              color={textColor}
             />
 
             <TitleOrange
               title="Telefone"
               fontFamily={FONTS.inter[600]}
               fontSize={18}
-              color={COLORS.orange[875]}
+              color={titleColor}
             />
           </View>
 
           <Text
             style={{
               fontFamily: FONTS.inter[400],
-              color: COLORS.orange[900],
+              color: textColor,
               fontSize: 14,
             }}
           >
@@ -205,21 +213,21 @@ export default function CardInformationUser() {
             <MaterialCommunityIcons
               name="map-marker-outline"
               size={24}
-              color={COLORS.orange[900]}
+              color={textColor}
             />
 
             <TitleOrange
               title="Endereço"
               fontFamily={FONTS.inter[600]}
               fontSize={18}
-              color={COLORS.orange[875]}
+              color={titleColor}
             />
           </View>
 
           <Text
             style={{
               fontFamily: FONTS.inter[400],
-              color: COLORS.orange[900],
+              color: textColor,
               fontSize: 14,
               maxWidth: "55%",
               textAlign: "right",

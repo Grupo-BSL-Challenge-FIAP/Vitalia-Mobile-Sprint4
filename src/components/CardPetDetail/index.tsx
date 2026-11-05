@@ -3,6 +3,7 @@ import CardPet from "../CardPet";
 import { COLORS, FONTS } from "../../styles/styles";
 import { PetResponse } from "../../services/petService";
 import { useImages } from "../../contexts/ImageContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface CardPetDetailProps {
   pet: PetResponse;
@@ -12,6 +13,11 @@ export default function CardPetDetail({
   pet,
 }: CardPetDetailProps) {
   const { getPetImage } = useImages();
+  const { isDarkMode } = useTheme();
+
+  const textColor = isDarkMode
+    ? COLORS.white[100]
+    : COLORS.orange[100];
 
   const getPetAgeLabel = (
     birthDate?: string,
@@ -99,7 +105,7 @@ export default function CardPetDetail({
             style={{
               fontFamily: FONTS.inter[700],
               fontSize: 18,
-              color: COLORS.orange[100],
+              color: textColor,
               lineHeight: 20,
             }}
           >
@@ -110,7 +116,7 @@ export default function CardPetDetail({
             style={{
               fontFamily: FONTS.inter[500],
               fontSize: 16,
-              color: COLORS.orange[100],
+              color: textColor,
               lineHeight: 20,
             }}
           >

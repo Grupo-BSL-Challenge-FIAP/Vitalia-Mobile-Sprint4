@@ -1,4 +1,4 @@
-import { Image, Text, TouchableOpacity, View, } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import TitleOrange from "../TitleOrange";
 import CardPet from "../CardPet";
 import { COLORS, FONTS } from "../../styles/styles";
@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useMyPets } from "../../hooks/useMyPets";
 import { useImages } from "../../contexts/ImageContext";
 import { useActivePet } from "../../contexts/ActivePetContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParamList } from "../../navigation/HomeStackNavigator";
@@ -20,15 +21,18 @@ export default function YourPets() {
 
   const { getPetImage } = useImages();
   const { activePetId, setActivePet, isLoadingActivePet } = useActivePet();
+  const { isDarkMode } = useTheme();
+
   const activePet = pets.find((pet) => pet.id === activePetId) ?? pets[0];
   const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
 
-  const getPetAgeLabel = ( birthDate?: string,) => {
+  const getPetAgeLabel = (birthDate?: string) => {
     if (!birthDate) {
       return "";
     }
+
     const [year, month, day] = birthDate.split("-").map(Number);
-    const birth = new Date( year, month - 1, day);
+    const birth = new Date(year, month - 1, day);
     const today = new Date();
 
     let months = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
@@ -71,7 +75,7 @@ export default function YourPets() {
   };
 
   useEffect(() => {
-    if ( isLoadingActivePet || pets.length === 0) {
+    if (isLoadingActivePet || pets.length === 0) {
       return;
     }
 
@@ -81,7 +85,6 @@ export default function YourPets() {
       setActivePet(pets[0].id);
     }
   }, [pets, activePetId, isLoadingActivePet]);
-
 
   const handleActivePet = async (id: number) => {
     await setActivePet(id);
@@ -112,7 +115,7 @@ export default function YourPets() {
           <Text
             style={{
               fontFamily: FONTS.inter[500],
-              color: COLORS.orange[900],
+              color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
             }}
           >
             Ver todos
@@ -121,7 +124,7 @@ export default function YourPets() {
           <Entypo
             name="chevron-small-right"
             size={23}
-            color={COLORS.orange[900]}
+            color={isDarkMode ? COLORS.white[100] : COLORS.orange[900]}
           />
         </TouchableOpacity>
       </View>
@@ -130,7 +133,7 @@ export default function YourPets() {
         <Text
           style={{
             fontFamily: FONTS.inter[500],
-            color: COLORS.orange[900],
+            color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
             marginVertical: 15,
           }}
         >
@@ -142,7 +145,7 @@ export default function YourPets() {
         <Text
           style={{
             fontFamily: FONTS.inter[500],
-            color: COLORS.orange[900],
+            color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
             marginVertical: 15,
           }}
         >
@@ -156,7 +159,7 @@ export default function YourPets() {
           <Text
             style={{
               fontFamily: FONTS.inter[500],
-              color: COLORS.orange[900],
+              color: isDarkMode ? COLORS.white[100] : COLORS.orange[900],
               marginVertical: 15,
             }}
           >
@@ -205,9 +208,7 @@ export default function YourPets() {
               <View>
                 <Image
                   source={getPetImage(
-                    getSpeciesIdFromPet(
-                      activePet,
-                    ),
+                    getSpeciesIdFromPet(activePet),
                     activePet.sex,
                     undefined,
                     activePet.id,
@@ -216,8 +217,7 @@ export default function YourPets() {
                     width: 84,
                     height: 84,
                     borderRadius: 10,
-                    borderColor:
-                      COLORS.orange[500],
+                    borderColor: COLORS.orange[500],
                     borderWidth: 2,
                   }}
                 />
@@ -231,11 +231,9 @@ export default function YourPets() {
                 <View>
                   <Text
                     style={{
-                      fontFamily:
-                        FONTS.inter[700],
+                      fontFamily: FONTS.inter[700],
                       fontSize: 20,
-                      color:
-                        COLORS.orange[100],
+                      color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                       lineHeight: 20,
                     }}
                   >
@@ -244,16 +242,12 @@ export default function YourPets() {
 
                   <Text
                     style={{
-                      fontFamily:
-                        FONTS.inter[500],
+                      fontFamily: FONTS.inter[500],
                       fontSize: 13,
-                      color:
-                        COLORS.orange[100],
+                      color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                     }}
                   >
-                    {getPetAgeLabel(
-                      activePet.birthDate,
-                    )}
+                    {getPetAgeLabel(activePet.birthDate)}
                   </Text>
                 </View>
 
@@ -266,11 +260,9 @@ export default function YourPets() {
                   <View>
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[700],
+                        fontFamily: FONTS.inter[700],
                         fontSize: 14,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                         lineHeight: 15,
                       }}
                     >
@@ -279,26 +271,21 @@ export default function YourPets() {
 
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[500],
+                        fontFamily: FONTS.inter[500],
                         fontSize: 13,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                       }}
                     >
-                      {activePet.breedName ??
-                        "Não informada"}
+                      {activePet.breedName ?? "Não informada"}
                     </Text>
                   </View>
 
                   <View>
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[700],
+                        fontFamily: FONTS.inter[700],
                         fontSize: 14,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                         lineHeight: 15,
                       }}
                     >
@@ -307,11 +294,9 @@ export default function YourPets() {
 
                     <Text
                       style={{
-                        fontFamily:
-                          FONTS.inter[500],
+                        fontFamily: FONTS.inter[500],
                         fontSize: 13,
-                        color:
-                          COLORS.orange[100],
+                        color: isDarkMode ? COLORS.white[100] : COLORS.orange[100],
                       }}
                     >
                       {activePet.sex}
